@@ -1,0 +1,37 @@
+{
+    "name": "piggly/wordpress-starter-kit",
+    "description": "A smart Wordpress Starter Kit to plugins development.",
+    "keywords": [
+        "wordpress",
+        "plugins",
+        "wordpress development",
+        "plugins development"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/piggly-dev/wordpress-starter-kit",
+    "autoload": {
+        "psr-4": {
+            "Piggly\\Wordpress\\": "src"
+        }
+    },
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "psr/log": "^1.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Caique Araujo",
+            "email": "caique@piggly.com.br",
+            "homepage": "https://github.com/caiquearaujo",
+            "role": "Developer"
+        },
+        {
+            "name": "Piggly Lab",
+            "email": "dev@piggly.com.br",
+            "homepage": "https://github.com/piggly-dev",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "stable"
+}
