@@ -3,3 +3,7 @@
 ## `1.0.0` at `2020-07-19`
 
 * First release.
+
+## `1.0.1` at `2020-07-19`
+
+* Debugger as regular class.

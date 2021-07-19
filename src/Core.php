@@ -40,7 +40,7 @@ abstract class Core extends Initiable
 	)
 	{
 		// Set if it is debbuging
-		Debugger::changeState($this->isDebugging() ?? false);
+		static::getDebugger()->changeState($this->isDebugging() ?? false);
 
 		// Runnable classes
 		$this->activator($activator);
@@ -114,6 +114,14 @@ abstract class Core extends Initiable
 	 * @return boolean
 	 */
 	abstract public function isDebugging () : bool;
+
+	/**
+	 * Get debugger.
+	 *
+	 * @since 1.0.0
+	 * @return Debugger
+	 */
+	abstract public static function getDebugger () : Debugger;
 
 	/**
 	 * Get plugin runtime settings.
