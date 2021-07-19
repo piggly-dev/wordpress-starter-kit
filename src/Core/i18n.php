@@ -34,14 +34,15 @@ class i18n extends Initiable
 	 * at /path/to/plugin/languages.
 	 * 
 	 * @since 1.0.0
+	 * @since 1.0.2 Non static.
 	 * @return void
 	 */
-	public static function load_plugin_textdomain ()
+	public function load_plugin_textdomain ()
 	{
 		load_plugin_textdomain(
-			Core::getPlugin()->getDomain(),
+			$this->_plugin->getDomain(),
 			false,
-			Core::getPlugin()->getAbspath().'/languages'
+			$this->_plugin->getAbspath().'/languages'
 		);
 	}
 
@@ -53,9 +54,10 @@ class i18n extends Initiable
 	 * @param string $plural
 	 * @param integer $number
 	 * @since 1.0.0
+	 * @since 1.0.2 Non static.
 	 * @return string
 	 */
-	public static function _ntranslate ( string $single, string $plural, int $number ) : string
+	public function _ntranslate ( string $single, string $plural, int $number ) : string
 	{ return _n( $single, $plural, $number, 'text-domain' ); }
 
 	/**
@@ -63,18 +65,20 @@ class i18n extends Initiable
 	 *
 	 * @param string $text
 	 * @since 1.0.0
+	 * @since 1.0.2 Non static.
 	 * @return void
 	 */
-	public static function _etranslate ( string $text )
-	{ _e( $text, Core::getPlugin()->getDomain() ); }
+	public function _etranslate ( string $text )
+	{ _e( $text, $this->_plugin->getDomain() ); }
 
 	/**
 	 * Retrieve the translation of $text.
 	 *
 	 * @param string $text
 	 * @since 1.0.0
+	 * @since 1.0.2 Non static.
 	 * @return string
 	 */
-	public static function __translate ( string $text ) : string
-	{ return __( $text, Core::getPlugin()->getDomain() ); }
+	public function __translate ( string $text ) : string
+	{ return __( $text, $this->_plugin->getDomain() ); }
 }
