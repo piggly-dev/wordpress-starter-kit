@@ -38,56 +38,13 @@ class Debugger
 	protected $debug = false;
 
 	/**
-	 * Prevents to construct.
-	 * 
-	 * @since 1.0.0
-	 * @return void
-	 */
-	protected function __construct () {}
-
-	/**
-	 * Prevents to clone.
-	 * 
-	 * @since 1.0.0
-	 * @return void
-	 */
-	protected function __clone () {}
-
-	/**
-	 * Prevents to wakeup.
-	 * 
-	 * @since 1.0.0
-	 * @return void
-	 */
-	protected function __wakeup () {}
-
-	/**
-	 * Returns a singleton instance of this class.
-	 * 
-	 * @since 1.0.0
-	 * @return self
-	 */
-	protected static function instance ()
-	{
-		// Static instance
-		static $instance;
-
-		// If is null, creates a new instance
-		if ( is_null ( $instance ) )
-		{ $instance = new self(); }
-
-		// Returns the static instance
-		return $instance;
-	}
-
-	/**
 	 * Return if is debugging.
 	 * 
 	 * @since 1.0.0
 	 * @return bool
 	 */
-	public static function debugging () : bool
-	{ return self::instance()->isDebugging(); }
+	public function debugging () : bool
+	{ return $this->isDebugging(); }
 
 	/**
 	 * Get logger or null.
@@ -95,8 +52,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return LoggerInterface|null
 	 */
-	public static function logger () : ?LoggerInterface
-	{ return self::instance()->getLogger(); }
+	public function logger () : ?LoggerInterface
+	{ return $this->getLogger(); }
 
 	/**
 	 * Change current debug logger.
@@ -105,8 +62,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function changeLogger ( LoggerInterface $logger )
-	{ self::instance()->setLogger($logger); }
+	public function changeLogger ( LoggerInterface $logger )
+	{ $this->setLogger($logger); }
 
 	/**
 	 * Change debug state.
@@ -115,8 +72,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function changeState ( bool $debug = true )
-	{ return self::instance()->setDebugging($debug); }
+	public function changeState ( bool $debug = true )
+	{ return $this->setDebugging($debug); }
 
 	/**
 	 * System is unusable.
@@ -131,8 +88,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function emergency ( string $message, array $context = [] )
-	{ static::callLogger('emergency', $message, $context); }
+	public function emergency ( string $message, array $context = [] )
+	{ $this->callLogger('emergency', $message, $context); }
 
 	/**
 	 * Action must be taken immediately.
@@ -151,8 +108,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function alert ( string $message, array $context = [] )
-	{ static::callLogger('alert', $message, $context); }
+	public function alert ( string $message, array $context = [] )
+	{ $this->callLogger('alert', $message, $context); }
 
 	/**
 	 * Critical conditions.
@@ -170,8 +127,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function critical ( string $message, array $context = [] )
-	{ static::callLogger('critical', $message, $context); }
+	public function critical ( string $message, array $context = [] )
+	{ $this->callLogger('critical', $message, $context); }
 
 	/**
 	 * Runtime errors that do not require immediate
@@ -187,8 +144,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function error ( string $message, array $context = [] )
-	{ static::callLogger('error', $message, $context); }
+	public function error ( string $message, array $context = [] )
+	{ $this->callLogger('error', $message, $context); }
 
 	/**
 	 * Exceptional occurrences that are not errors.
@@ -203,8 +160,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function warning ( string $message, array $context = [] )
-	{ static::callLogger('warning', $message, $context); }
+	public function warning ( string $message, array $context = [] )
+	{ $this->callLogger('warning', $message, $context); }
 
 	/**
 	 * Interesting events.
@@ -219,8 +176,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function info ( string $message, array $context = [] )
-	{ static::callLogger('info', $message, $context); }
+	public function info ( string $message, array $context = [] )
+	{ $this->callLogger('info', $message, $context); }
 
 	/**
 	 * Detailed debug information.
@@ -235,8 +192,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function debug ( string $message, array $context = [] )
-	{ static::callLogger('debug', $message, $context); }
+	public function debug ( string $message, array $context = [] )
+	{ $this->callLogger('debug', $message, $context); }
 
 	/**
 	 * Normal but significant events.
@@ -251,8 +208,8 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function notice ( string $message, array $context = [] )
-	{ static::callLogger('notice', $message, $context); }
+	public function notice ( string $message, array $context = [] )
+	{ $this->callLogger('notice', $message, $context); }
 
 	/**
 	 * Prepare logger before call it, validating
@@ -264,11 +221,9 @@ class Debugger
 	 * @since 1.0.0
 	 * @return void
 	 */
-	protected static function callLogger ( string $level, string $message, array $context = [] )
+	protected function callLogger ( string $level, string $message, array $context = [] )
 	{
-		
-		$instance = self::instance();
-		$logger = $instance->getLogger();
+		$logger = $this->getLogger();
 		
 		$context = array_merge(array( 'source' => Core::getPlugin()->getName() ), $context);
 		if ( !is_null($logger) ) $logger->{$level}($message, $context);
