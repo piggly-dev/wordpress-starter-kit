@@ -54,7 +54,7 @@ class Debugger
 	 */
 	public function logger () : ?LoggerInterface
 	{ return $this->getLogger(); }
-
+  
 	/**
 	 * Change current debug logger.
 	 *

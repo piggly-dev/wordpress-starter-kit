@@ -1,6 +1,8 @@
 <?php
 namespace Piggly\Wordpress\Core\Scaffold;
 
+use Piggly\Wordpress\Plugin;
+
 /**
  * Every business login must be at a different
  * class, to easy manager these classes, Initiable
@@ -20,16 +22,38 @@ namespace Piggly\Wordpress\Core\Scaffold;
 abstract class Initiable
 {
 	/**
+	 * Plugin settings.
+	 *
+	 * @var Plugin
+	 * @since 1.0.2
+	 */
+	protected $_plugin;
+
+	/**
 	 * Run startup method to class create
 	 * it own instance.
 	 *
+	 * @param Plugin $plugin
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public static function init ()
+	public static function init ( Plugin $plugin = null )
 	{
-		$obj = new self();
+		$obj = new self($plugin);
 		$obj->startup();
+	}
+	
+	/**
+	 * Construct with optional plugin settings.
+	 *
+	 * @param Plugin $plugin
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public function __construct ( Plugin $plugin = null )
+	{
+		if ( !is_null($plugin) )
+		{ $this->_plugin = $plugin; }
 	}
 
 	/**
@@ -40,4 +64,23 @@ abstract class Initiable
 	 * @return void
 	 */
 	abstract public function startup ();
+
+	/**
+	 * Set plugin settings.
+	 *
+	 * @param Plugin $plugin
+	 * @since 1.0.2
+	 * @return Core
+	 */
+	public function plugin ( Plugin $plugin )
+	{ $this->_plugin = $plugin; return $this; }
+
+	/**
+	 * Get plugin settings.
+	 *
+	 * @since 1.0.2
+	 * @return Plugin
+	 */
+	public function getPlugin () : Plugin
+	{ return $this->_plugin; }
 }
