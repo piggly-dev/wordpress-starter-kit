@@ -39,16 +39,10 @@ abstract class Core extends Initiable
 		Runnable $upgrader
 	)
 	{
-		// Set if it is debbuging
-		static::getDebugger()->changeState($this->isDebugging() ?? false);
-
 		// Runnable classes
 		$this->activator($activator);
 		$this->desactivator($desactivator);
 		$this->upgrader($upgrader);
-
-		// Initiable classes
-		$this->initiable(i18n::class);
 	}
 
 	/**
@@ -63,7 +57,7 @@ abstract class Core extends Initiable
 	{
 		// Plugin activation
 		register_activation_hook( 
-			static::getPlugin()->getAbspath(), 
+			$this->_plugin->getAbspath(), 
 			array($activator, 'run')
 		);
 	}
@@ -80,7 +74,7 @@ abstract class Core extends Initiable
 	{
 		// Plugin desactivation
 		register_deactivation_hook( 
-			static::getPlugin()->getAbspath(), 
+			$this->_plugin->getAbspath(), 
 			array($desactivator, 'run')
 		);
 	}
@@ -104,38 +98,5 @@ abstract class Core extends Initiable
 	 * @return void
 	 */
 	public function initiable ( string $initiable )
-	{ $initiable::init(); }
-
-	/**
-	 * Return if plugin is debugging. You may set it
-	 * from plugin settings by getting Manager class.
-	 * 
-	 * @since 1.0.0
-	 * @return boolean
-	 */
-	abstract public function isDebugging () : bool;
-
-	/**
-	 * Get debugger.
-	 *
-	 * @since 1.0.0
-	 * @return Debugger
-	 */
-	abstract public static function getDebugger () : Debugger;
-
-	/**
-	 * Get plugin runtime settings.
-	 *
-	 * @since 1.0.0
-	 * @return Plugin
-	 */
-	abstract public static function getPlugin () : Plugin;
-
-	/**
-	 * Get core plugin settings.
-	 *
-	 * @since 1.0.0
-	 * @return Manager
-	 */
-	abstract public static function getSettings () : Manager;
+	{ $initiable::init($this->_plugin); }
 }

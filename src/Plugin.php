@@ -1,7 +1,10 @@
 <?php
 namespace Piggly\Wordpress;
 
+use Piggly\Wordpress\Core\Debugger;
+use Piggly\Wordpress\Core\i18n;
 use Piggly\Wordpress\Settings\Bucket;
+use Piggly\Wordpress\Settings\Manager;
 
 /**
  * This class is used to manage all runtime
@@ -34,22 +37,85 @@ class Plugin
 	protected $_bucket;
 
 	/**
-	 * Startup runtime settings.
-	 * 
-	 * @since 1.0.0
-	 * @return void
+	 * Debugger.
+	 *
+	 * @var Debugger
+	 * @since 1.0.2
 	 */
-	public function __construct ()
-	{ $this->_bucket = new Bucket(); }
+	protected $_debugger;
 
 	/**
-	 * Get settings bucket to manages.
+	 * i18n.
+	 *
+	 * @var i18n
+	 * @since 1.0.2
+	 */
+	protected $_i18n;
+
+	/**
+	 * Settings.
+	 *
+	 * @var Manager
+	 * @since 1.0.2
+	 */
+	protected $_settings;
+
+	/**
+	 * Startup runtime settings.
+	 * 
+	 * @param string $option Option setting name at Wordpress.
+	 * @param Bucket $defaults Default plugin settings.
+	 * @param boolean $debug Debug status.
+	 * @since 1.0.0
+	 * @since 1.0.2 Added setting and debugger.
+	 * @return void
+	 */
+	public function __construct ( string $option, Bucket $defaults = null )
+	{ 
+		$this->_bucket = new Bucket(); 
+		$this->_settings = new Manager($option, $defaults);
+		$this->_debugger = new Debugger();
+		$this->_i18n = new i18n($this);
+
+		$this->_debugger->changeState($this->_settings->bucket()->get('debug', false));
+		$this->_i18n->startup();
+	}
+
+	/**
+	 * Get runtime settings bucket to manage.
 	 *
 	 * @since 1.0.0
 	 * @return Bucket
 	 */
 	public function bucket () : Bucket
 	{ return $this->_bucket; }
+
+	/**
+	 * Get settings manager.
+	 *
+	 * @since 1.0.2
+	 * @return Manager
+	 */
+	public function settings () : Manager
+	{ return $this->_settings; }
+
+	/**
+	 * Get debugger.
+	 *
+	 * @since 1.0.2
+	 * @return Debugger
+	 */
+	public function debugger () : Debugger
+	{ return $this->_debugger; }
+
+	/**
+	 * Get i18n functions.
+	 *
+	 * @since 1.0.2
+	 * @return i18n
+	 */
+	public function i18n () : i18n
+	{ return $this->_i18n; }
 
 	/**
 	 * Set absolute path to plugin. It applies plugin_dir_path()
