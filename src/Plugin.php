@@ -228,4 +228,23 @@ class Plugin
 	 */
 	public function getVersion () : ?string
 	{ return $this->_bucket->get('version'); }
+
+	/**
+	 * Set the plugin notices transient name.
+	 *
+	 * @param string $transient
+	 * @since 1.0.0
+	 * @return self
+	 */
+	public function notices ( string $transient )
+	{ $this->_bucket->set('noticesTransient', $transient); return $this; }
+
+	/**
+	 * Get plugin notices transient name.
+	 * 
+	 * @since 1.0.0
+	 * @return string|null
+	 */
+	public function getNotices () : ?string
+	{ return $this->_bucket->get('noticesTransient'); }
 }
