@@ -17,7 +17,7 @@ use RuntimeException;
  * @license MIT
  * @copyright 2021 Piggly Lab <dev@piggly.com.br>
  */
-class Bucket
+abstract class Bucket
 {
 	/**
 	 * Settings array.
@@ -28,119 +28,35 @@ class Bucket
 	protected $_settings = [];
 
 	/**
-	 * Set setting by key.
-	 * 
-	 * Call set_{$key}($default) method if it
-	 * exists.
-	 * 
-	 * When $value is an array import it to
-	 * a new Bucket.
-	 *
-	 * @param string $key
-	 * @param Bucket|mixed $value
-	 * @since 1.0.0
-	 * @return self
-	 */
-	public function set ( string $key, $value )
-	{ 
-		if ( \method_exists($this, 'set_'.$key) )
-		{ 
-			$setter = 'set_'.$key; 
-			$this->{$setter}($value);
-			return $this; 
-		}
-
-		if ( \is_array($value) )
-		{ 
-			$this->_settings[$key] = (new Bucket())->import($value);
-			return $this; 
-		}
-
-		$this->_settings[$key] = $value; 
-		return $this; 
-	}
-
-	/**
-	 * Get setting by key.
-	 * 
-	 * Call get_{$key}($default) method if it
-	 * exists.
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 * @since 1.0.0
-	 * @return mixed
-	 */
-	public function get ( string $key, $default = null )
-	{ 
-		if ( \method_exists($this, 'get_'.$key) )
-		{ $getter = 'get_'.$key; return $this->{$getter}($default); }
-
-		return $this->_settings[$key] ?? $default; 
-	}
-
-	/**
-	 * Check if has setting by key.
-	 *
-	 * @param string $key
-	 * @since 1.0.0
-	 * @return boolean
-	 */
-	public function has ( string $key ) : bool
-	{ return isset($this->_settings[$key]); }
-
-	/**
-	 * Remove setting by key.
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 * @since 1.0.0
-	 * @return mixed
-	 */
-	public function remove ( string $key )
-	{ unset($this->_settings[$key]); return $this; }
-
-	/**
 	 * Import an array to bucket.
-	 * 
-	 * It will call import_{$key}($value) method when
-	 * it exists to add setting key to bucket.
 	 *
 	 * @param array<Bucket|mixed> $data
-	 * @param boolean $overwrite If should overwrite keys.
+	 * @param array $options
 	 * @since 1.0.0
 	 * @return self
 	 */
 	public function import ( array $data, bool $overwrite = true )
 	{
-		foreach ( $data as $key => $value )
+		if ( $this instanceof NonKeyingBucket )
 		{
-			if ( $overwrite || !$this->has($key) )
-			{ 
-				if ( \method_exists($this, 'import_'.$key) )
-				{ 
-					$setter = 'import_'.$key; 
-					$this->{$setter}($value);
-					continue; 
+			foreach ( $data as $value )
+			{ $this->push($value); }
+		}
+		else if ( $this instanceof KeyingBucket )
+		{
+			foreach ( $data as $key => $value )
+			{
+				if ( $overwrite || !$this->has($key) )
+				{ $this->set($key, $value); continue; } 
+
+				if ( $this->_settings[$key] instanceof Bucket )
+				{
+					if ( !($value instanceof Bucket) || \is_array($value) )
+					{ throw new RuntimeException(\sprintf('Setting value `%s` must be a Bucket object or an array.', $key)); }
+
+					$value = $value instanceof Bucket ? $value->export() : $value;
+					$this->_settings[$key]->import($value, $overwrite);
 				}
-
-				if ( \is_array($value) )
-				{ 
-					$this->_settings[$key] = (new Bucket())->import($value);
-					continue;
-				}
-
-				$this->_settings[$key] = $value; 
-				continue; 
-			}
-
-			if ( $this->_settings[$key] instanceof Bucket )
-			{ 
-				if ( !($value instanceof Bucket) || \is_array($value) )
-				{ throw new RuntimeException(\sprintf('Setting key `%s` must be a Bucket object or an array.', $key)); }
-
-				$value = $value instanceof Bucket ? $value->export() : $value;
-				$this->_settings[$key]->import($value, $overwrite);
 			}
 		}
 
@@ -151,30 +67,70 @@ class Bucket
 	 * Export current bucket to an array.
 	 * 
 	 * It will call export_{$key}($value) method when
-	 * it exists to export setting key from bucket.
+	 * it exists to export value key from bucket.
 	 * 
-	 * @since 1.0.0
+	 * @since 1.0.3
 	 * @return array
 	 */
 	public function export () : array
 	{
-		$settings = [];
-
-		foreach ( $this->_settings as $key => $value )
+		if ( $this instanceof NonKeyingBucket )
 		{
-			if ( $value instanceof Bucket )
-			{ $settings[$key] = $value->export(); continue; }
-			
-			if ( \method_exists($this, 'import_'.$key) )
-			{ 
-				$getter = 'export_'.$key; 
-				$settings[$key] = $this->{$getter}($value);
-				continue; 
+			$settings = [];
+
+			foreach ( $this->_settings as $value )
+			{
+				if ( $value instanceof Bucket )
+				{ $settings[] = $value->export(); continue; }
+
+				$settings[] = $value;
 			}
 
-			$settings[$key] = $value;
+			return $settings;
 		}
 
-		return $settings;
+		if ( $this instanceof KeyingBucket )
+		{
+			$settings = [];
+
+			foreach ( $this->_settings as $key => $value )
+			{
+				if ( $value instanceof Bucket )
+				{ $settings[$key] = $value->export(); continue; }
+	
+				if ( \method_exists($this, 'export_'.$key) )
+				{ 
+					$getter = 'export_'.$key; 
+					$settings[$key] = $this->{$getter}($value);
+					continue; 
+				}
+	
+				$settings[$key] = $value;
+			}
+	
+			return $settings;
+		}
+
+		return [];
+	}
+
+	/**
+	 * Return if $arr is associative or not.
+	 *
+	 * @param array $arr
+	 * @since 1.0.0
+	 * @return boolean
+	 */
+	protected static function isAssociative ( array $arr ) : bool
+	{
+		$n = count($arr);
+
+		for ( $i = 0; $i < $n; $i++ )
+		{
+			if ( \array_key_exists($i, $arr) )
+			{ return false; }
+		}
+
+		return true;
 	}
 }

@@ -1,11 +1,8 @@
 <?php
 namespace Piggly\Wordpress;
 
-use Piggly\Wordpress\Core\Debugger;
-use Piggly\Wordpress\Core\i18n;
 use Piggly\Wordpress\Core\Interfaces\Runnable;
 use Piggly\Wordpress\Core\Scaffold\Initiable;
-use Piggly\Wordpress\Settings\Manager;
 
 /**
  * The Core class startup all plugin business
@@ -25,23 +22,28 @@ abstract class Core extends Initiable
 {
 	/**
 	 * Startup plugin core with an activator,
-	 * a desactivator and a upgrader.
+	 * a deactivator and a upgrader.
 	 *
+	 * @param Plugin $plugin Master plugin settings.
 	 * @param Runnable $activator Run at register_activation_hook()
-	 * @param Runnable $desactivator Run at register_deactivation_hook()
+	 * @param Runnable $deactivator Run at register_deactivation_hook()
 	 * @param Runnable $upgrader Manage updates logic.
 	 * @since 1.0.0
+	 * @since 1.0.3 Plugin as param.
 	 * @return void
 	 */
 	public function __construct (
+		Plugin $plugin,
 		Runnable $activator,
-		Runnable $desactivator,
+		Runnable $deactivator,
 		Runnable $upgrader
 	)
 	{
+		$this->plugin($plugin);
+
 		// Runnable classes
 		$this->activator($activator);
-		$this->desactivator($desactivator);
+		$this->deactivator($deactivator);
 		$this->upgrader($upgrader);
 	}
 
@@ -57,7 +59,7 @@ abstract class Core extends Initiable
 	{
 		// Plugin activation
 		register_activation_hook( 
-			$this->_plugin->getAbspath(), 
+			$this->_plugin->bucket()->get('filename'), 
 			array($activator, 'run')
 		);
 	}
@@ -70,11 +72,11 @@ abstract class Core extends Initiable
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public function desactivator ( Runnable $desactivator )
+	public function deactivator ( Runnable $desactivator )
 	{
 		// Plugin desactivation
 		register_deactivation_hook( 
-			$this->_plugin->getAbspath(), 
+			$this->_plugin->bucket()->get('filename'), 
 			array($desactivator, 'run')
 		);
 	}

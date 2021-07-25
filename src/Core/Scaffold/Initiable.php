@@ -11,7 +11,7 @@ use Piggly\Wordpress\Plugin;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Core\Scaffold
- * @version 1.0.0
+ * @version 1.0.3
  * @since 1.0.0
  * @category Scaffold
  * @author Caique Araujo <caique@piggly.com.br>
@@ -19,41 +19,21 @@ use Piggly\Wordpress\Plugin;
  * @license MIT
  * @copyright 2021 Piggly Lab <dev@piggly.com.br>
  */
-abstract class Initiable
+abstract class Initiable extends Internationalizable
 {
-	/**
-	 * Plugin settings.
-	 *
-	 * @var Plugin
-	 * @since 1.0.2
-	 */
-	protected $_plugin;
-
 	/**
 	 * Run startup method to class create
 	 * it own instance.
 	 *
 	 * @param Plugin $plugin
 	 * @since 1.0.0
+	 * @since 1.0.3 Static instead self
 	 * @return void
 	 */
 	public static function init ( Plugin $plugin = null )
 	{
-		$obj = new self($plugin);
+		$obj = new static($plugin);
 		$obj->startup();
-	}
-	
-	/**
-	 * Construct with optional plugin settings.
-	 *
-	 * @param Plugin $plugin
-	 * @since 1.0.2
-	 * @return void
-	 */
-	public function __construct ( Plugin $plugin = null )
-	{
-		if ( !is_null($plugin) )
-		{ $this->_plugin = $plugin; }
 	}
 
 	/**
@@ -64,23 +44,4 @@ abstract class Initiable
 	 * @return void
 	 */
 	abstract public function startup ();
-
-	/**
-	 * Set plugin settings.
-	 *
-	 * @param Plugin $plugin
-	 * @since 1.0.2
-	 * @return Core
-	 */
-	public function plugin ( Plugin $plugin )
-	{ $this->_plugin = $plugin; return $this; }
-
-	/**
-	 * Get plugin settings.
-	 *
-	 * @since 1.0.2
-	 * @return Plugin
-	 */
-	public function getPlugin () : Plugin
-	{ return $this->_plugin; }
 }
