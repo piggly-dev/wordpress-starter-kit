@@ -11,3 +11,7 @@
 ## `1.0.2` at `2020-07-19`
 
 * Depencency injector format.
+
+## `1.0.3` at `2020-07-25`
+
+* Improvements at classes behaviors.

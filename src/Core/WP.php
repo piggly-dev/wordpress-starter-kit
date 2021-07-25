@@ -8,7 +8,7 @@ namespace Piggly\Wordpress\Core;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Core
- * @version 1.0.0
+ * @version 1.0.3
  * @since 1.0.0
  * @category Core
  * @author Caique Araujo <caique@piggly.com.br>
@@ -74,6 +74,15 @@ class WP
 	}
 
 	/**
+	 * Check if "I am" in the Admin Panel.
+	 * 
+	 * @since 1.0.3
+	 * @return bool
+	 */
+	public static function is_admin () : bool
+	{ return is_admin(); }
+
+	/**
 	 * Check if "I am" in the Admin Panel, not doing AJAX call.
 	 * 
 	 * @since 1.0.0
@@ -81,6 +90,15 @@ class WP
 	 */
 	public static function is_pure_admin () : bool
 	{ return ( is_admin() && !self::is_doing_ajax() ); }
+
+	/**
+	 * Check if is user logged in.
+	 * 
+	 * @since 1.0.3
+	 * @return bool
+	 */
+	public static function is_user_logger_in () : bool
+	{ return \is_user_logged_in(); }
 
 	/**
 	 * Check if WP_DEBUG is active.

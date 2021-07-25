@@ -1,7 +1,6 @@
 <?php
 namespace Piggly\Wordpress\Core;
 
-use Piggly\Wordpress\Core;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -11,7 +10,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Core
- * @version 1.0.0
+ * @version 1.0.3
  * @since 1.0.0
  * @category Debug
  * @author Caique Araujo <caique@piggly.com.br>
@@ -21,6 +20,14 @@ use Psr\Log\LoggerInterface;
  */
 class Debugger
 {
+	/**
+	 * Main application name.
+	 * 
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $name;
+
 	/**
 	 * Main application logger.
 	 * 
@@ -36,6 +43,24 @@ class Debugger
 	 * @since 1.0.0
 	 */
 	protected $debug = false;
+
+	/**
+	 * Force log to the next call.
+	 *
+	 * @var boolean
+	 * @since 1.0.3
+	 */
+	protected $force = false;
+
+	/**
+	 * Construct debugger.
+	 *
+	 * @param string $name
+	 * @since 1.0.3
+	 * @return void
+	 */
+	public function __construct( string $name )
+	{ $this->name = $name; }
 
 	/**
 	 * Return if is debugging.
@@ -74,6 +99,15 @@ class Debugger
 	 */
 	public function changeState ( bool $debug = true )
 	{ return $this->setDebugging($debug); }
+
+	/**
+	 * Force to log only on the next call.
+	 *
+	 * @since 1.0.3
+	 * @return Debugger
+	 */
+	public function force () : Debugger
+	{ $this->force = true; return $this; }
 
 	/**
 	 * System is unusable.
@@ -225,7 +259,7 @@ class Debugger
 	{
 		$logger = $this->getLogger();
 		
-		$context = array_merge(array( 'source' => Core::getPlugin()->getName() ), $context);
+		$context = array_merge(array( 'source' => $this->name ), $context);
 		if ( !is_null($logger) ) $logger->{$level}($message, $context);
 	}
 
@@ -243,12 +277,16 @@ class Debugger
 	 * Get logger if is debugging.
 	 * 
 	 * @since 1.0.0
+	 * @since 1.0.3 Accept force logging, and reset force state.
 	 * @return LoggerInterface|null
 	 */
 	public function getLogger () 
 	{
-		if ( $this->debug ) 
-		{ return $this->logger ?? null; }
+		if ( $this->debug || $this->force ) 
+		{ 
+			$this->force = false;
+			return $this->logger ?? null; 
+		}
 
 		return null;
 	}
