@@ -22,7 +22,7 @@ class Manager
 	/**
 	 * Bucket.
 	 *
-	 * @var Bucket
+	 * @var KeyingBucket
 	 * @since 1.0.0
 	 */
 	protected $_bucket;
@@ -39,13 +39,13 @@ class Manager
 	 * Startup settings manager.
 	 *
 	 * @param string $option Option name at Wordpress.
-	 * @param Bucket $defaults Default settings.
+	 * @param KeyingBucket $defaults Default settings.
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public function __construct ( string $option, Bucket $defaults = null )
+	public function __construct ( string $option, KeyingBucket $defaults = null )
 	{
-		$this->_bucket = \is_null($defaults) ? new Bucket() : $defaults;
+		$this->_bucket = \is_null($defaults) ? new KeyingBucket() : $defaults;
 		$this->_option = $option;
 
 		$this->reload();
@@ -55,9 +55,9 @@ class Manager
 	 * Get settings bucket to manages.
 	 *
 	 * @since 1.0.0
-	 * @return Bucket
+	 * @return KeyingBucket
 	 */
-	public function bucket () : Bucket
+	public function bucket () : KeyingBucket
 	{ return $this->_bucket; }
 
 	/**
@@ -85,7 +85,7 @@ class Manager
 		if ( delete_option($this->_option) === false )
 		{ throw new RuntimeException(\sprintf('Cannot delete wordpress option `%s`.', $this->_option)); }
 	
-		$this->_bucket = new Bucket(); 
+		$this->_bucket = new KeyingBucket(); 
 		return $this;
 	}
 
@@ -97,9 +97,7 @@ class Manager
 	 */
 	public function save ()
 	{ 
-		if ( update_option($this->_option, $this->_bucket->export()) === false )
-		{ throw new RuntimeException(\sprintf('Cannot save wordpress option `%s`.', $this->_option)); }
-	
+		update_option($this->_option, $this->_bucket->export());
 		return $this;
 	}
 }
