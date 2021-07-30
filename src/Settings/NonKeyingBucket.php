@@ -24,11 +24,12 @@ class NonKeyingBucket extends Bucket
 	 *
 	 * @param array $bucket
 	 * @since 1.0.3
+	 * @since 1.0.4 Fixed eternal loop
 	 * @return NonKeyingBucket
 	 */
 	public function set ( array $bucket )
 	{
-		$this->_settings = $this->import($bucket);
+		$this->_settings = $bucket;
 		return $this;
 	}
 
