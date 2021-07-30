@@ -1,8 +1,6 @@
 <?php
 namespace Piggly\Wordpress\Settings;
 
-use RuntimeException;
-
 /**
  * The Bucket class is a collection of
  * settings keys.
@@ -46,7 +44,7 @@ class KeyingBucket extends Bucket
 		if ( \is_array($value) )
 		{ 
 			$bucket = self::isAssociative($value) ? KeyingBucket::class : NonKeyingBucket::class;
-			$this->_settings[$key] = (new $bucket())->import($value);
+			$this->_settings[$key] = empty($value) ? new $bucket() : (new $bucket())->import($value);
 			return $this; 
 		}
 
