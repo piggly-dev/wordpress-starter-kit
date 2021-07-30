@@ -26,10 +26,11 @@ abstract class Internationalizable extends Pluggable
 	 * @param string $plural
 	 * @param integer $number
 	 * @since 1.0.3
+	 * @since 1.0.4 Fixed text domain.
 	 * @return string
 	 */
 	public function _ntranslate ( string $single, string $plural, int $number ) : string
-	{ return _n( $single, $plural, $number, 'text-domain' ); }
+	{ return _n( $single, $plural, $number, $this->_plugin->getDomain() ); }
 
 	/**
 	 * Display the translation of $text.

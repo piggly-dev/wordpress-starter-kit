@@ -33,29 +33,48 @@ abstract class Bucket
 	 * @param array<Bucket|mixed> $data
 	 * @param array $options
 	 * @since 1.0.0
+	 * @since 1.0.4 Optimizations
 	 * @return self
 	 */
 	public function import ( array $data, bool $overwrite = true )
 	{
 		if ( $this instanceof NonKeyingBucket )
 		{
-			foreach ( $data as $value )
-			{ $this->push($value); }
+			if ( $overwrite )
+			{ $this->set($data); }
+			else
+			{
+				foreach ( $data as $value )
+				{ $this->push($value); }
+			}
 		}
 		else if ( $this instanceof KeyingBucket )
 		{
 			foreach ( $data as $key => $value )
 			{
-				if ( $overwrite || !$this->has($key) )
-				{ $this->set($key, $value); continue; } 
+				// New key, so add...
+				if ( !$this->has($key) )
+				{
+					$this->set($key, $value);
+					continue;
+				}
 
+				// Is a bucket, then import...
 				if ( $this->_settings[$key] instanceof Bucket )
 				{
-					if ( !($value instanceof Bucket) || \is_array($value) )
+					if ( !($value instanceof Bucket) && !\is_array($value) )
 					{ throw new RuntimeException(\sprintf('Setting value `%s` must be a Bucket object or an array.', $key)); }
 
 					$value = $value instanceof Bucket ? $value->export() : $value;
 					$this->_settings[$key]->import($value, $overwrite);
+					continue;
+				}
+			
+				// Not a bucket, then overwrite when needed
+				if ( $overwrite )
+				{
+					$this->set($key, $value);
+					continue;
 				}
 			}
 		}
@@ -119,11 +138,15 @@ abstract class Bucket
 	 *
 	 * @param array $arr
 	 * @since 1.0.0
+	 * @since 1.0.4 Empty array is always non associative.
 	 * @return boolean
 	 */
 	protected static function isAssociative ( array $arr ) : bool
 	{
 		$n = count($arr);
+
+		if ( empty($n) )
+		{ return false; }
 
 		for ( $i = 0; $i < $n; $i++ )
 		{

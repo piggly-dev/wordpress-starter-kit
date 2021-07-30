@@ -15,3 +15,7 @@
 ## `1.0.3` at `2020-07-25`
 
 * Improvements at classes behaviors.
+
+## `1.0.4` at `2020-07-25`
+
+* Micro fixes at code logic.
