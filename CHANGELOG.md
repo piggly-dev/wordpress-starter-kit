@@ -19,3 +19,7 @@
 ## `1.0.4` at `2020-07-25`
 
 * Micro fixes at code logic.
+
+## `1.0.5` at `2020-07-25`
+
+* [ADD] `Ajaxable` class to manager all main ajax behaviors.
