@@ -23,3 +23,7 @@
 ## `1.0.5` at `2020-07-25`
 
 * [ADD] `Ajaxable` class to manager all main ajax behaviors.
+
+## `1.0.6` at `2020-08-19`
+
+* [ADD] `count()` method to `NonKeyingBucket` object.
