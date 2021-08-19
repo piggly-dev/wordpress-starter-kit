@@ -82,6 +82,15 @@ class NonKeyingBucket extends Bucket
 	}
 
 	/**
+	 * Count settings array.
+	 *
+	 * @since 1.0.6
+	 * @return integer
+	 */
+	public function count () : int
+	{ return \count($this->_settings); }
+
+	/**
 	 * Get all bucket data.
 	 *
 	 * @since 1.0.3
