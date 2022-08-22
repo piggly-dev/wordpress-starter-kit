@@ -36,3 +36,7 @@
 * [ADD] Runner for create table in database;
 * [ADD] Static core as a connector class.
 
+## `1.0.8` at `2022-08-21`
+
+* [ADD] Text Input Field;
+* [ADD] Constructor to Create Table Runner.
