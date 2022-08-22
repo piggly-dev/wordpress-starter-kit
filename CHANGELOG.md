@@ -27,3 +27,12 @@
 ## `1.0.6` at `2020-08-19`
 
 * [ADD] `count()` method to `NonKeyingBucket` object.
+
+## `1.0.7` at `2022-08-21`
+
+* [ADD] Custom WP List Table;
+* [ADD] Custom WP Repository;
+* [ADD] Custom WP Table Data as a Repository;
+* [ADD] Runner for create table in database;
+* [ADD] Static core as a connector class.
+
