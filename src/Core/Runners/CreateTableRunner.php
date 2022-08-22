@@ -30,6 +30,16 @@ class CreateTableRunner implements Runnable
 	protected RepositoryInterface $database;
 
 	/**
+	 * Class constructor.
+	 *
+	 * @since 1.0.8
+	 */
+	public function __construct(RepositoryInterface $database)
+	{
+		$this->database = $database;
+	}
+
+	/**
 	 * Method to run all business logic.
 	 *
 	 * @since 1.0.7
