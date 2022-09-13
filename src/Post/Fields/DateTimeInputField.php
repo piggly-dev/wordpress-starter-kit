@@ -22,7 +22,7 @@ class DateTimeInputField extends TextInputField
 	/**
 	 * Input type.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected $type = 'datetime-local';
@@ -30,7 +30,7 @@ class DateTimeInputField extends TextInputField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{

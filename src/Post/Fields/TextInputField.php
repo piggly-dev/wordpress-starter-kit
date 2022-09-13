@@ -7,8 +7,8 @@ namespace Piggly\Wordpress\Post\Fields;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Fields
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Fields
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -20,7 +20,7 @@ class TextInputField extends InputField
 	/**
 	 * Input type.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected $type = 'text';
@@ -28,7 +28,7 @@ class TextInputField extends InputField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{
@@ -44,7 +44,7 @@ class TextInputField extends InputField
 	 *
 	 * @param mixed $value
 	 * @param mixed $default
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function render($value = '')

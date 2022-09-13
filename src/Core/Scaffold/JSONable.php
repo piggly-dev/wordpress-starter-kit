@@ -16,8 +16,8 @@ use Piggly\Wordpress\Helpers\RequestBodyParser;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Core\Scaffold
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Scaffold
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -30,14 +30,14 @@ abstract class JSONable extends Initiable
 	 * Response status code.
 	 *
 	 * @var int
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	protected $_status_code = null;
 
 	/**
 	 * Handle all endpoints.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	abstract public function handlers();
@@ -55,7 +55,7 @@ abstract class JSONable extends Initiable
 	 * @see BodyValidator
 	 * @param array $schema
 	 * @param array $options
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 * @throws Exception
 	 */
@@ -92,7 +92,7 @@ abstract class JSONable extends Initiable
 	 * or success response.
 	 *
 	 * @param integer $status
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return JSONable
 	 */
 	protected function status(int $status)
@@ -106,7 +106,7 @@ abstract class JSONable extends Initiable
 	 * It gets the code and message from exception.
 	 *
 	 * @param Exception $e
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function error(Exception $e, bool $log = false)
@@ -122,7 +122,7 @@ abstract class JSONable extends Initiable
 	 * It will auto exit php script.
 	 *
 	 * @param array $data
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function success(array $data)
@@ -137,7 +137,7 @@ abstract class JSONable extends Initiable
 	 *
 	 * @param array $err
 	 * @param boolean $log Should log this error?
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	private function exit(array $err, bool $log = false)

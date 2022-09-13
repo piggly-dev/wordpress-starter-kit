@@ -16,8 +16,8 @@ use Piggly\Wordpress\Core\Scaffold\JSONable;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Post
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Post
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -43,7 +43,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Current fields.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var array
 	 */
 	protected array $current_fields = [];
@@ -51,7 +51,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Primary key column name.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $primary_key = 'id';
@@ -59,7 +59,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Hide when updating or insertin.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var array
 	 */
 	protected array $hidden = [];
@@ -67,7 +67,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Version for PGLY WPS SETTINGS lib.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $js_version = '0.2.0';
@@ -76,7 +76,7 @@ abstract class AsyncCustomPostType extends JSONable
 	 * File for template of content page
 	 * in templates folder of plugin.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $_table_page = 'admin/post-types-table.php';
@@ -85,7 +85,7 @@ abstract class AsyncCustomPostType extends JSONable
 	 * File for template of content page
 	 * in templates folder of plugin.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $_content_page = 'admin/post-types-content.php';
@@ -94,7 +94,7 @@ abstract class AsyncCustomPostType extends JSONable
 	 * Run startup method to class create
 	 * it own instance.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function startup()
@@ -105,7 +105,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Create a new menu at Wordpress admin menu bar.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function add_menu()
@@ -145,7 +145,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Enqueue scripts and styles.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function enqueue_scripts()
@@ -227,7 +227,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Fill query values from query string data.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function fill_query()
@@ -258,7 +258,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Prepare fields to editing.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function prepare_fields()
@@ -290,7 +290,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Load any data required before show fields.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function post_load()
@@ -300,7 +300,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Edit record.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @throws Exception
 	 */
 	protected function edit(array $fields = []): array
@@ -334,7 +334,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Remove record.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 * @throws Exception
 	 */
@@ -350,7 +350,7 @@ abstract class AsyncCustomPostType extends JSONable
 	 *
 	 * @param string $message
 	 * @param string $type
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function notification(
@@ -365,7 +365,7 @@ abstract class AsyncCustomPostType extends JSONable
 	 *
 	 * @param array $arr
 	 * @param array $remove
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	protected function _removeFromArray(array $arr, array $remove): array
@@ -382,7 +382,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get the fields structure.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array<InputField>
 	 */
 	abstract public function fieldsStructure(): array;
@@ -390,7 +390,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get custom post type icon.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function getIcon(): string;
@@ -398,7 +398,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get custom post type slug.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function getSlug(): string;
@@ -406,7 +406,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get custom post type singular name.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function singularName(): string;
@@ -414,7 +414,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get custom post type plural name.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function pluralName(): string;
@@ -422,7 +422,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get custom post type field prefix.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function fieldPrefix(): string;
@@ -430,7 +430,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get the current repository.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return WPRepository
 	 */
 	abstract public static function getRepository(): WPRepository;
@@ -438,7 +438,7 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Get the current table.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return RecordTable
 	 */
 	abstract public static function getTable();

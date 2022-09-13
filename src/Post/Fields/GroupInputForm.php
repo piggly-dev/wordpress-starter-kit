@@ -22,7 +22,7 @@ class GroupInputForm extends HTMLField
 	/**
 	 * Field options.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var array
 	 */
 	protected array $_options = [];
@@ -30,7 +30,7 @@ class GroupInputForm extends HTMLField
 	/**
 	 * Rows with fields.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var array<array<HTMLField>>
 	 */
 	protected array $_rows = [];
@@ -40,7 +40,7 @@ class GroupInputForm extends HTMLField
 	 *
 	 * @param array $options
 	 * @param array<array<HTMLField>> $rows
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options, array $rows = [])
 	{
@@ -55,7 +55,7 @@ class GroupInputForm extends HTMLField
 	/**
 	 * Get field column size.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return int
 	 */
 	public function columnSize(): int
@@ -66,7 +66,7 @@ class GroupInputForm extends HTMLField
 	/**
 	 * Get field options.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	public function options(): array
@@ -78,7 +78,7 @@ class GroupInputForm extends HTMLField
 	 * Add a row of fields.
 	 *
 	 * @param array<HTMLField> $columns
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function row(array $columns)
@@ -90,7 +90,7 @@ class GroupInputForm extends HTMLField
 	 * Render to HTML.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function render($values = [])

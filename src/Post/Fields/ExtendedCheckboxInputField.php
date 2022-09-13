@@ -20,7 +20,7 @@ class ExtendedCheckboxInputField extends InputField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{
@@ -35,7 +35,7 @@ class ExtendedCheckboxInputField extends InputField
 	 *
 	 * @param mixed $value
 	 * @param mixed $default
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function render($value = '')

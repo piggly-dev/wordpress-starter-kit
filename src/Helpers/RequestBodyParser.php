@@ -9,8 +9,8 @@ use Exception;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Helpers
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Helper
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -46,7 +46,7 @@ class RequestBodyParser
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function __construct()
@@ -59,7 +59,7 @@ class RequestBodyParser
 	/**
 	 * Return if request method is POST.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return boolean
 	 */
 	public function isPOST(): bool
@@ -70,7 +70,7 @@ class RequestBodyParser
 	/**
 	 * Return if request method is GET.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return boolean
 	 */
 	public function isGET(): bool
@@ -81,7 +81,7 @@ class RequestBodyParser
 	/**
 	 * Get request method.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	public function method(): string
@@ -92,7 +92,7 @@ class RequestBodyParser
 	/**
 	 * Get raw request body.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string
 	 */
 	public function raw(): string
@@ -103,7 +103,7 @@ class RequestBodyParser
 	/**
 	 * Get parsed request body.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	public function body(): array
@@ -116,7 +116,7 @@ class RequestBodyParser
 	 * and return an array with all data
 	 * parsed.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	public function resolve(): array
@@ -139,7 +139,7 @@ class RequestBodyParser
 	 * content type.
 	 *
 	 * @param string $raw
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	public function json(string $raw): array
@@ -159,7 +159,7 @@ class RequestBodyParser
 	 * content type.
 	 *
 	 * @param string $raw
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 */
 	public function urlencode(string $raw): array

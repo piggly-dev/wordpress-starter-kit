@@ -20,7 +20,7 @@ class FloatInputField extends TextInputField
 	/**
 	 * Input type.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected $type = 'number';
@@ -28,7 +28,7 @@ class FloatInputField extends TextInputField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{

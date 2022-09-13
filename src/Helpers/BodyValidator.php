@@ -9,8 +9,8 @@ use Exception;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Helpers
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Helper
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -33,7 +33,7 @@ class BodyValidator
 	 *
 	 * @param array $raw
 	 * @param array $schema
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array
 	 * @throws Exception
 	 */

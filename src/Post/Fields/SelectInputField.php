@@ -7,8 +7,8 @@ namespace Piggly\Wordpress\Post\Fields;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Fields
- * @version 1.0.8
- * @since 1.0.8
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Fields
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
@@ -20,7 +20,7 @@ class SelectInputField extends InputField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{
@@ -36,7 +36,7 @@ class SelectInputField extends InputField
 	 *
 	 * @param mixed $value
 	 * @param mixed $default
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function render($value = '', array $options = [])

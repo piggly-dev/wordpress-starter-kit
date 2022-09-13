@@ -22,7 +22,7 @@ interface Renderable
 	 * Render to HTML with value.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function render($value);

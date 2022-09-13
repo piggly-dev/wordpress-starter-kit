@@ -22,7 +22,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Field value.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var mixed
 	 */
 	protected $_value;
@@ -30,7 +30,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 */
 	public function __construct(array $options)
 	{
@@ -55,7 +55,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get field column size.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return int
 	 */
 	public function columnSize(): int
@@ -66,7 +66,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get field label.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string|null
 	 */
 	public function label(): string
@@ -77,7 +77,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get field description.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string|null
 	 */
 	public function description(): string
@@ -88,7 +88,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get field placeholder.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return string|null
 	 */
 	public function placeholder(): string
@@ -99,7 +99,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get field default value.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return mixed
 	 */
 	public function default()
@@ -110,7 +110,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get if field is required.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return boolean
 	 */
 	public function isRequired(): bool
@@ -121,7 +121,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get allowed value for field.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return array|null
 	 */
 	public function allowedValues(): ?array
@@ -133,7 +133,7 @@ abstract class InputField extends HTMLField
 	 * Parse $value with parse function.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return mixed
 	 */
 	public function parse($value)
@@ -149,7 +149,7 @@ abstract class InputField extends HTMLField
 	 * Transform $value with transform function.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return mixed
 	 */
 	public function transform($value)
@@ -165,7 +165,7 @@ abstract class InputField extends HTMLField
 	 * Validate $value with validation functions.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return mixed
 	 */
 	public function validation($value)
@@ -185,7 +185,7 @@ abstract class InputField extends HTMLField
 	/**
 	 * Get value or default.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return mixed
 	 */
 	public function value()
@@ -197,7 +197,7 @@ abstract class InputField extends HTMLField
 	 * Change value.
 	 *
 	 * @param mixed $value
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @return self
 	 */
 	public function changeValue($value)
