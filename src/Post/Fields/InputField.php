@@ -2,6 +2,8 @@
 
 namespace Piggly\Wordpress\Post\Fields;
 
+use Piggly\Wordpress\Post\Fields\Interfaces\Renderable;
+
 /**
  * Base implementation to an input field.
  *
@@ -15,177 +17,192 @@ namespace Piggly\Wordpress\Post\Fields;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-abstract class InputField
+abstract class InputField extends HTMLField
 {
 	/**
-	 * Field name.
+	 * Field value.
 	 *
-	 * @since 1.0.7
-	 * @var string
+	 * @since 1.0.9
+	 * @var mixed
 	 */
-	protected string $name;
+	protected $_value;
 
 	/**
-	 * Field prefix.
+	 * Class constructor.
 	 *
-	 * @since 1.0.7
-	 * @var string
+	 * @since 1.0.9
 	 */
-	protected string $prefix;
+	public function __construct(array $options)
+	{
+		$this->_options = \array_merge([
+			'name' => null,
+			'label' => null,
+			'description' => null,
+			'prefix' => null,
+			'placeholder' => null,
+			'required' => false,
+			'default' => null,
+			'allowed_values' => null,
+			'parse' => null, // parse function fn ($v) => $v
+			'transform' => null, // transformer function fn ($v) => $v
+			'validation' => null, // array of functions fn ($v) => throw Exception
+			'column_size' => 12
+		], $options);
 
-	/**
-	 * Field label.
-	 *
-	 * @since 1.0.7
-	 * @var string
-	 */
-	protected string $label;
-
-	/**
-	 * Field placeholder.
-	 *
-	 * @since 1.0.7
-	 * @var string|null
-	 */
-	protected ?string $placeholder;
-
-	/**
-	 * Flag if it is required.
-	 *
-	 * @since 1.0.7
-	 * @var bool
-	 */
-	protected bool $required;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param string $prefix
-	 * @param string $name
-	 * @param string $label
-	 * @param string $placeholder
-	 * @param string $required
-	 * @param mixed $default
-	 * @since 1.0.7
-	 */
-	public function __construct(
-		string $prefix,
-		string $name,
-		string $label,
-		string $placeholder = null,
-		bool $required = false,
-		$default = ''
-	) {
-		$this->name = $name;
-		$this->prefix = $prefix;
-		$this->label = $label;
-		$this->placeholder = $placeholder;
-		$this->required = $required;
-		$this->default = $default;
+		$this->_value = null;
 	}
 
 	/**
-	 * Get value or default.
-	 * When default is NULL, always
-	 * return value.
+	 * Get field column size.
 	 *
-	 * @param mixed $value
-	 * @param mixed $default
-	 * @since 0.1.0
-	 * @return mixed
+	 * @since 1.0.9
+	 * @return int
 	 */
-	public function getValue($value, $default = '')
+	public function columnSize(): int
 	{
-		if (\is_null($default)) {
-			return $value;
-		}
-
-		return empty($value) ? $default : $value;
-	}
-
-	/**
-	 * Get field name.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	/**
-	 * Get field name with prefix.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	public function getNameWithPrefix(): string
-	{
-		return $this->prefix . $this->name;
+		return $this->_options['column_size'];
 	}
 
 	/**
 	 * Get field label.
 	 *
-	 * @since 1.0.7
-	 * @return string
+	 * @since 1.0.9
+	 * @return string|null
 	 */
-	public function getLabel(): string
+	public function label(): string
 	{
-		return $this->label;
+		return $this->_options['label'] ?? '';
 	}
 
 	/**
-	 * Flag as required.
+	 * Get field description.
 	 *
-	 * @since 1.0.7
-	 * @return self
+	 * @since 1.0.9
+	 * @return string|null
 	 */
-	public function required()
+	public function description(): string
 	{
-		$this->required = true;
-		return $this;
+		return $this->_options['description'] ?? '';
 	}
 
 	/**
-	 * Flag as optional.
+	 * Get field placeholder.
 	 *
-	 * @since 1.0.7
-	 * @return self
+	 * @since 1.0.9
+	 * @return string|null
 	 */
-	public function optional()
+	public function placeholder(): string
 	{
-		$this->required = false;
-		return $this;
+		return $this->_options['placeholder'] ?? '';
 	}
 
 	/**
-	 * Check if is required.
+	 * Get field default value.
 	 *
-	 * @since 1.0.7
-	 * @return bool
-	 */
-	public function isRequired()
-	{
-		return $this->required;
-	}
-
-	/**
-	 * Parse data to desired format.
-	 *
-	 * @param mixed $data
+	 * @since 1.0.9
 	 * @return mixed
 	 */
-	abstract public function parse($data);
+	public function default()
+	{
+		return $this->_options['default'];
+	}
 
 	/**
-	 * Render to HTML with value.
+	 * Get if field is required.
+	 *
+	 * @since 1.0.9
+	 * @return boolean
+	 */
+	public function isRequired(): bool
+	{
+		return $this->_options['required'] ?? false;
+	}
+
+	/**
+	 * Get allowed value for field.
+	 *
+	 * @since 1.0.9
+	 * @return array|null
+	 */
+	public function allowedValues(): ?array
+	{
+		return $this->_options['allowed_values'];
+	}
+
+	/**
+	 * Parse $value with parse function.
 	 *
 	 * @param mixed $value
-	 * @param mixed $default
-	 * @since 1.0.7
-	 * @return void
+	 * @since 1.0.9
+	 * @return mixed
 	 */
-	abstract public function render($value = '', $default = '');
+	public function parse($value)
+	{
+		if (empty($this->_options['parse'])) {
+			return $value;
+		}
+
+		return $this->_options['parse']($value);
+	}
+
+	/**
+	 * Transform $value with transform function.
+	 *
+	 * @param mixed $value
+	 * @since 1.0.9
+	 * @return mixed
+	 */
+	public function transform($value)
+	{
+		if (empty($this->_options['transform'])) {
+			return $value;
+		}
+
+		return $this->_options['transform']($value);
+	}
+
+	/**
+	 * Validate $value with validation functions.
+	 *
+	 * @param mixed $value
+	 * @since 1.0.9
+	 * @return mixed
+	 */
+	public function validation($value)
+	{
+		if (empty($this->_options['validation'])) {
+			return $value;
+		}
+
+		foreach ($this->_options['validation'] as $validate) {
+			$validate($value);
+		}
+
+		return $$value;
+	}
+
+
+	/**
+	 * Get value or default.
+	 *
+	 * @since 1.0.9
+	 * @return mixed
+	 */
+	public function value()
+	{
+		return $this->_value ?? $this->_options['default'] ?? null;
+	}
+
+	/**
+	 * Change value.
+	 *
+	 * @param mixed $value
+	 * @since 1.0.9
+	 * @return self
+	 */
+	public function changeValue($value)
+	{
+		$this->_value = $this->parse($value);
+		return $this;
+	}
 }

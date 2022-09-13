@@ -9,22 +9,22 @@ use Piggly\Wordpress\Tables\RecordTable;
 use Piggly\Wordpress\Core\WP;
 use Exception;
 use Piggly\Wordpress\Connector;
-use Piggly\Wordpress\Core\Scaffold\Initiable;
+use Piggly\Wordpress\Core\Scaffold\JSONable;
 
 /**
  * Manage the custom post type structure.
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Post
- * @version 1.0.7
- * @since 1.0.7
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Post
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-abstract class CustomPostType extends Initiable
+abstract class AsyncCustomPostType extends JSONable
 {
 	/**
 	 * ID from query string variable.
@@ -43,7 +43,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Current fields.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @var array
 	 */
 	protected array $current_fields = [];
@@ -51,7 +51,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Primary key column name.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $primary_key = 'id';
@@ -59,7 +59,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Hide when updating or insertin.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @var array
 	 */
 	protected array $hidden = [];
@@ -67,7 +67,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Version for PGLY WPS SETTINGS lib.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $js_version = '0.2.0';
@@ -76,7 +76,7 @@ abstract class CustomPostType extends Initiable
 	 * File for template of content page
 	 * in templates folder of plugin.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $_table_page = 'admin/post-types-table.php';
@@ -85,7 +85,7 @@ abstract class CustomPostType extends Initiable
 	 * File for template of content page
 	 * in templates folder of plugin.
 	 *
-	 * @since 1.0.8
+	 * @since 1.0.9
 	 * @var string
 	 */
 	protected string $_content_page = 'admin/post-types-content.php';
@@ -94,7 +94,7 @@ abstract class CustomPostType extends Initiable
 	 * Run startup method to class create
 	 * it own instance.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function startup()
@@ -105,7 +105,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Create a new menu at Wordpress admin menu bar.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function add_menu()
@@ -145,7 +145,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Enqueue scripts and styles.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	public function enqueue_scripts()
@@ -166,6 +166,17 @@ abstract class CustomPostType extends Initiable
 			null,
 			Connector::plugin()->getVersion(),
 			'all'
+		);
+
+		\wp_localize_script(
+			\sprintf('pgly-wps-settings-%s-js', $this->js_version),
+			'pglyWps',
+			[
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'x_security' => \wp_create_nonce($this->fieldPrefix().'_nonce'),
+				'plugin_url' => admin_url('admin.php?page='.Connector::domain()),
+				'assets_url' => Connector::plugin()->getUrl()
+			]
 		);
 	}
 
@@ -197,7 +208,6 @@ abstract class CustomPostType extends Initiable
 		try {
 			$this->fill_query();
 			$this->prepare_fields();
-			$this->action();
 			$this->post_load();
 		} catch (Exception $e) {
 			echo '<div class="notice notice-error is-dismissible"><p>' .
@@ -217,7 +227,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Fill query values from query string data.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function fill_query()
@@ -248,7 +258,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Prepare fields to editing.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function prepare_fields()
@@ -278,26 +288,9 @@ abstract class CustomPostType extends Initiable
 	}
 
 	/**
-	 * Process action.
-	 *
-	 * @since 1.0.7
-	 * @return void
-	 */
-	protected function action()
-	{
-		switch ($this->query_action) {
-			case 'edit':
-			case 'add':
-				return $this->edit();
-			case 'remove':
-				return $this->remove();
-		}
-	}
-
-	/**
 	 * Load any data required before show fields.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function post_load()
@@ -305,69 +298,17 @@ abstract class CustomPostType extends Initiable
 	}
 
 	/**
-	 * Get fields from post request.
-	 *
-	 * @since 1.0.7
-	 * @return void
-	 */
-	protected function get_fields()
-	{
-		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-			return;
-		}
-
-		$prefix = $this->fieldPrefix();
-
-		$nonce = \filter_input(
-			\INPUT_POST,
-			$prefix . 'nonce',
-			\FILTER_DEFAULT,
-			\FILTER_NULL_ON_FAILURE
-		);
-
-		/* Verify the nonce before proceeding. */
-		if (empty($nonce) || !\wp_verify_nonce($nonce, $prefix . 'save')) {
-			throw new Exception(
-				'O nonce para o envio do formulário é inválido.'
-			);
-		}
-
-		$fields = $this->fieldsStructure();
-
-		foreach ($fields as $field) {
-			$_post = \filter_input(
-				\INPUT_POST,
-				$field->getNameWithPrefix(),
-				\FILTER_DEFAULT,
-				\FILTER_NULL_ON_FAILURE
-			);
-
-			if ($field->isRequired() && empty($_post)) {
-				throw new Exception(
-					"Campo `{$field->getLabel()}` é obrigatório para prosseguir."
-				);
-			}
-
-			$this->current_fields[$field->getName()] = $field->parse($_post);
-		}
-	}
-
-	/**
 	 * Edit record.
 	 *
-	 * @since 1.0.7
-	 * @return void
+	 * @since 1.0.9
+	 * @throws Exception
 	 */
-	protected function edit(): void
+	protected function edit(array $fields = []): array
 	{
-		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-			return;
-		}
-
-		$this->get_fields();
+		$this->current_fields = $fields;
 		$this->current_fields['updated_at'] = new DateTime(
 			'now',
-			wp_timezone()
+			\wp_timezone()
 		);
 
 		if (!empty($this->current_fields[$this->primary_key])) {
@@ -387,94 +328,29 @@ abstract class CustomPostType extends Initiable
 			)[$this->primary_key];
 		}
 
-		$this->notification(
-			\sprintf(
-				'%s salvo com sucesso. Você será redirecionado em instantes.',
-				static::singularName()
-			)
-		);
-
-		$this->redirectTo($this->current_fields[$this->primary_key]);
+		return $this->current_fields;
 	}
 
 	/**
 	 * Remove record.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
+	 * @throws Exception
 	 */
-	protected function remove(): void
+	protected function remove(string $id): void
 	{
-		if (empty($this->query_id)) {
-			throw new Exception(
-				\sprintf(
-					'O ID do %s não pode ser vazio.',
-					\strtolower(static::singularName())
-				)
-			);
-		}
-
 		$this->getRepository()::delete([
-			$this->primary_key => $this->query_id,
+			$this->primary_key => $id,
 		]);
-
-		$this->notification(
-			\sprintf(
-				'%s removido com sucesso. Você será redirecionado em instantes.',
-				static::singularName()
-			)
-		);
-
-		$this->redirectToTable();
 	}
-
-	/**
-	 * Redirect to record by id.
-	 *
-	 * @param mixed $id
-	 * @since 1.0.7
-	 * @return void
-	 */
-	protected function redirectTo($id)
-	{
-		$url = \add_query_arg(
-			[
-				'id' => $id,
-				'action' => 'edit',
-			],
-			\admin_url('admin.php?page=' . static::getSlug() . '-content')
-		); ?>
-<script lang="javascript">
-	setTimeout(function() {
-		window.location.href = "<?= $url ?>";
-	}, 3000);
-</script>
-<?php
-	}
-
-	/**
-	 * Redirect to table.
-	 *
-	 * @since 1.0.7
-	 * @return void
-	 */
-	protected function redirectToTable()
-	{
-		$url = \admin_url('admin.php?page=' . static::getSlug()); ?>
-<script lang="javascript">
-	setTimeout(function() {
-		window.location.href = "<?= $url ?>";
-	}, 3000);
-</script>
-<?php
-	}
-
+	
 	/**
 	 * Echo notification in screen.
 	 *
 	 * @param string $message
 	 * @param string $type
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return void
 	 */
 	protected function notification(
@@ -489,7 +365,7 @@ abstract class CustomPostType extends Initiable
 	 *
 	 * @param array $arr
 	 * @param array $remove
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return array
 	 */
 	protected function _removeFromArray(array $arr, array $remove): array
@@ -506,7 +382,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get the fields structure.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return array<InputField>
 	 */
 	abstract public function fieldsStructure(): array;
@@ -514,7 +390,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get custom post type icon.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function getIcon(): string;
@@ -522,7 +398,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get custom post type slug.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function getSlug(): string;
@@ -530,7 +406,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get custom post type singular name.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function singularName(): string;
@@ -538,7 +414,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get custom post type plural name.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function pluralName(): string;
@@ -546,7 +422,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get custom post type field prefix.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return string
 	 */
 	abstract public static function fieldPrefix(): string;
@@ -554,7 +430,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get the current repository.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return WPRepository
 	 */
 	abstract public static function getRepository(): WPRepository;
@@ -562,7 +438,7 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get the current table.
 	 *
-	 * @since 1.0.7
+	 * @since 1.0.9
 	 * @return RecordTable
 	 */
 	abstract public static function getTable();
