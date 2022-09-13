@@ -15,16 +15,8 @@ namespace Piggly\Wordpress\Post\Fields;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class TextInputField extends InputField
+class SelectInputField extends InputField
 {
-	/**
-	 * Input type.
-	 *
-	 * @since 1.0.9
-	 * @var string
-	 */
-	protected $type = 'text';
-
 	/**
 	 * Class constructor.
 	 *
@@ -47,7 +39,7 @@ class TextInputField extends InputField
 	 * @since 1.0.9
 	 * @return void
 	 */
-	public function render($value = '')
+	public function render($value = '', array $options = [])
 	{
 		$this->changeValue($value);
 
@@ -55,13 +47,24 @@ class TextInputField extends InputField
 		$vl = $this->value();
 
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--text\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--select\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<input id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\" type=\"{$this->type}\" value=\"{$vl}\">";
+		$html .= "<select id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\">";
+
+		if (!empty($this->placeholder())) {
+			$html .= "<option class=\"placeholder\" value=\"\">{$this->placeholder()}</option>";
+		}
+
+		foreach ($options as $option) {
+			$selected = $option['value'] === $vl ? 'selected="selected"' : '';
+			$html .= "<option value=\"{$option['value']}\" {$selected}>{$option['label']}</option>";
+		}
+
+		$html .= '</select>';
 		$html .= '<span class="pgly-wps--message"></span>';
 
 		if (!empty($this->description())) {

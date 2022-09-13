@@ -40,3 +40,9 @@
 
 * [ADD] Text Input Field;
 * [ADD] Constructor to Create Table Runner.
+
+## `1.0.9` at `2022-09-13`
+
+* [ADD] New fields structure;
+* [ADD] JSONable behavior;
+* [ADD] Async custom post type.
