@@ -48,7 +48,7 @@ class ExtendedSingleMediaInputField extends InputField
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--single-media\" data-name=\"{$this->name()}\">";
 
-		if (!empty($label)) {
+		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
@@ -59,7 +59,7 @@ class ExtendedSingleMediaInputField extends InputField
 
 		$html .= '<span class="pgly-wps--message"></span>';
 
-		if (!empty($description)) {
+		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
 
@@ -67,7 +67,7 @@ class ExtendedSingleMediaInputField extends InputField
 			<button class=\"pgly-wps--button pgly-wps-is-compact pgly-wps-is-primary pgly-wps--select\">{$lbls['select']}</button>
 			<button class=\"pgly-wps--button pgly-wps-is-compact pgly-wps-is-danger pgly-wps--clean\">{$lbls['clean']}</button>
 		</div>";
-		
+
 		$html .= '</div>';
 		$html .= '</div>';
 

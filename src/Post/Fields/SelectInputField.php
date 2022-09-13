@@ -7,15 +7,15 @@ namespace Piggly\Wordpress\Post\Fields;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Fields
- * @version 1.0.7
- * @since 1.0.7
+ * @version 1.0.8
+ * @since 1.0.8
  * @category Fields
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class ExtendedCheckboxInputField extends InputField
+class SelectInputField extends InputField
 {
 	/**
 	 * Class constructor.
@@ -27,9 +27,10 @@ class ExtendedCheckboxInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
-			return \boolval($value);
+			return \esc_attr($value);
 		};
 	}
+
 	/**
 	 * Render to HTML with value.
 	 *
@@ -38,31 +39,37 @@ class ExtendedCheckboxInputField extends InputField
 	 * @since 1.0.8
 	 * @return void
 	 */
-	public function render($value = '')
+	public function render($value = '', array $options = [])
 	{
 		$this->changeValue($value);
 
 		$id = $this->name(true);
-		$vl = $this->value() ? 'true' : 'false';
+		$vl = $this->value();
 
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--checkbox\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--select\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<div class=\"pgly-wps--checkbox\" data-value=\"{$vl}\">";
-		$html .= "<div class=\"pgly-wps--icon\"></div>";
-		$html .= "<div class=\"pgly-wps--placeholder\">My checkbox</div>";
-		$html .= "</div>";
+		$html .= "<select id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\">";
 
+		if (!empty($this->placeholder())) {
+			$html .= "<option class=\"placeholder\" value=\"\">{$this->placeholder()}</option>";
+		}
+
+		foreach ($options as $option) {
+			$selected = $option['value'] === $vl ? 'selected="selected"' : '';
+			$html .= "<option value=\"{$option['value']}\" {$selected}>{$option['label']}</option>";
+		}
+
+		$html .= '</select>';
 		$html .= '<span class="pgly-wps--message"></span>';
 
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
-
 
 		$html .= '</div>';
 		$html .= '</div>';

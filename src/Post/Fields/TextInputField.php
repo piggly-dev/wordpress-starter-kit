@@ -57,17 +57,17 @@ class TextInputField extends InputField
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--text\" data-name=\"{$this->name()}\">";
 
-		if (!empty($label)) {
+		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
 		$html .= "<input id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\" type=\"{$this->type}\" value=\"{$vl}\">";
 		$html .= '<span class="pgly-wps--message"></span>';
 
-		if (!empty($description)) {
+		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
-		
+
 		$html .= '</div>';
 		$html .= '</div>';
 
