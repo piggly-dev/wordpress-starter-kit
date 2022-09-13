@@ -3,10 +3,10 @@
 namespace Piggly\Wordpress\Post\Fields;
 
 /**
- * Base implementation to an url input field.
+ * Base implementation to a number input field.
  *
  * @package \Piggly\Wordpress
- * @subpackage \Piggly\Wordpress\Post\Fields
+ * @subpackage \Piggly\Wordpress\Fields
  * @version 1.0.7
  * @since 1.0.7
  * @category Fields
@@ -15,8 +15,16 @@ namespace Piggly\Wordpress\Post\Fields;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class UrlInputField extends TextInputField
+class FloatInputField extends TextInputField
 {
+	/**
+	 * Input type.
+	 *
+	 * @since 1.0.8
+	 * @var string
+	 */
+	protected $type = 'number';
+
 	/**
 	 * Class constructor.
 	 *
@@ -26,8 +34,8 @@ class UrlInputField extends TextInputField
 	{
 		parent::__construct($options);
 
-		$this->_options['parse'] = function ($value) {
-			return \esc_url($value);
+		$this->_options['transform'] = function ($value) {
+			return \floatval($value);
 		};
 	}
 }
