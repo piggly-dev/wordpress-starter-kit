@@ -10,6 +10,11 @@ use Piggly\Wordpress\Core\WP;
 use Exception;
 use Piggly\Wordpress\Connector;
 use Piggly\Wordpress\Core\Scaffold\JSONable;
+use Piggly\Wordpress\Entities\AbstractEntity;
+use Piggly\Wordpress\Helpers\BodyValidator;
+use Piggly\Wordpress\Helpers\RequestBodyParser;
+use Piggly\Wordpress\Post\Fields\Form;
+use Piggly\Wordpress\Post\Fields\SchemaExtractor;
 
 /**
  * Manage the custom post type structure.
@@ -41,28 +46,12 @@ abstract class AsyncCustomPostType extends JSONable
 	protected string $query_action = 'add';
 
 	/**
-	 * Current fields.
+	 * Current entity.
 	 *
-	 * @since 1.0.9
-	 * @var array
+	 * @since 1.0.10
+	 * @var AbstractEntity
 	 */
-	protected array $current_fields = [];
-
-	/**
-	 * Primary key column name.
-	 *
-	 * @since 1.0.9
-	 * @var string
-	 */
-	protected string $primary_key = 'id';
-
-	/**
-	 * Hide when updating or insertin.
-	 *
-	 * @since 1.0.9
-	 * @var array
-	 */
-	protected array $hidden = [];
+	protected $entity;
 
 	/**
 	 * Version for PGLY WPS SETTINGS lib.
@@ -170,11 +159,11 @@ abstract class AsyncCustomPostType extends JSONable
 
 		\wp_localize_script(
 			\sprintf('pgly-wps-settings-%s-js', $this->js_version),
-			'pglyWps',
+			Connector::plugin()->getName(),
 			[
 				'ajax_url' => admin_url('admin-ajax.php'),
-				'x_security' => \wp_create_nonce($this->fieldPrefix().'_nonce'),
-				'plugin_url' => admin_url('admin.php?page='.Connector::domain()),
+				'x_security' => \wp_create_nonce(static::nonceAction()),
+				'plugin_url' => admin_url('admin.php?page='.static::getSlug()),
 				'assets_url' => Connector::plugin()->getUrl()
 			]
 		);
@@ -263,12 +252,11 @@ abstract class AsyncCustomPostType extends JSONable
 	 */
 	protected function prepare_fields()
 	{
-		// Default fields data
-		$fields = $this->current_fields;
+		$this->entity = static::entityModel()::create();
 
 		// Try to load fields
 		if (!empty($this->query_id)) {
-			$fields = $this->getRepository()::byId($this->query_id);
+			$fields = static::entityModel()::getRepo()::byId($this->query_id, 'OBJECT');
 
 			if (empty($fields)) {
 				throw new Exception(
@@ -281,10 +269,8 @@ abstract class AsyncCustomPostType extends JSONable
 				);
 			}
 
-			$fields[$this->primary_key] = $this->query_id;
+			$this->entity = static::entityModel()::fromRecord($fields);
 		}
-
-		$this->current_fields = $fields;
 	}
 
 	/**
@@ -298,53 +284,59 @@ abstract class AsyncCustomPostType extends JSONable
 	}
 
 	/**
+	 * Get fields from post request.
+	 *
+	 * @param RequestBodyParser $requestBody
+	 * @since 1.0.10
+	 * @return void
+	 */
+	protected function get_fields(RequestBodyParser $requestBody)
+	{
+		if (!$requestBody->isPOST()) {
+			return;
+		}
+
+		$this->entity = static::entityModel()::fromBody(
+			$this->parse(
+				$requestBody,
+				SchemaExtractor::extract($this->form()->fields()),
+				['nonce_name' => 'x_security', 'nonce_action' => static::nonceAction()]
+			)
+		);
+	}
+
+	/**
 	 * Edit record.
 	 *
 	 * @since 1.0.9
 	 * @throws Exception
 	 */
-	protected function edit(array $fields = []): array
+	protected function edit(): void
 	{
-		$this->current_fields = $fields;
-		$this->current_fields['updated_at'] = new DateTime(
-			'now',
-			\wp_timezone()
-		);
+		$requestBody = new RequestBodyParser();
 
-		if (!empty($this->current_fields[$this->primary_key])) {
-			$this->getRepository()::update(
-				$this->_removeFromArray($this->current_fields, $this->hidden),
-				[
-					$this->primary_key =>
-						$this->current_fields[$this->primary_key],
-				]
-			);
-		} else {
-			$this->current_fields[
-				$this->primary_key
-			] = $this->getRepository()::insert(
-				$this->_removeFromArray($this->current_fields, $this->hidden),
-				$this->primary_key
-			)[$this->primary_key];
+		if (!$requestBody->isPOST()) {
+			return;
 		}
 
-		return $this->current_fields;
+		$this->get_fields($requestBody);
+		$this->entity->save();
 	}
 
 	/**
 	 * Remove record.
 	 *
 	 * @since 1.0.9
-	 * @return void
+	 * @return bool
 	 * @throws Exception
 	 */
-	protected function remove(string $id): void
+	protected function remove(string $id): bool
 	{
-		$this->getRepository()::delete([
-			$this->primary_key => $id,
+		return static::entityModel()::getRepo()::delete([
+			static::entityModel()::primaryKey() => $id,
 		]);
 	}
-	
+
 	/**
 	 * Echo notification in screen.
 	 *
@@ -361,31 +353,12 @@ abstract class AsyncCustomPostType extends JSONable
 	}
 
 	/**
-	 * Remove fields from array.
+	 * Get the HTML form.
 	 *
-	 * @param array $arr
-	 * @param array $remove
-	 * @since 1.0.9
-	 * @return array
+	 * @since 1.0.10
+	 * @return Form
 	 */
-	protected function _removeFromArray(array $arr, array $remove): array
-	{
-		return \array_filter(
-			$arr,
-			function ($k) use ($remove) {
-				return !\in_array($k, $remove);
-			},
-			\ARRAY_FILTER_USE_KEY
-		);
-	}
-
-	/**
-	 * Get the fields structure.
-	 *
-	 * @since 1.0.9
-	 * @return array<InputField>
-	 */
-	abstract public function fieldsStructure(): array;
+	abstract public function form(): Form;
 
 	/**
 	 * Get custom post type icon.
@@ -420,12 +393,20 @@ abstract class AsyncCustomPostType extends JSONable
 	abstract public static function pluralName(): string;
 
 	/**
-	 * Get custom post type field prefix.
+	 * Get nonce action name.
 	 *
-	 * @since 1.0.9
+	 * @since 1.0.10
 	 * @return string
 	 */
-	abstract public static function fieldPrefix(): string;
+	abstract public static function nonceAction(): string;
+
+	/**
+	 * Get the current repository.
+	 *
+	 * @since 1.0.10
+	 * @return AbstractEntity
+	 */
+	abstract public static function entityModel(): AbstractEntity;
 
 	/**
 	 * Get the current repository.

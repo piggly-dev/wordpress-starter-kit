@@ -87,6 +87,25 @@ class GroupInputForm extends HTMLField
 	}
 
 	/**
+	 * Get fields.
+	 *
+	 * @since 1.0.10
+	 * @return array
+	 */
+	public function fields(): array
+	{
+		$fields = [];
+
+		foreach ($this->_rows as $row) {
+			foreach ($row as $column) {
+				$fields[] = $column;
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * Render to HTML.
 	 *
 	 * @param mixed $value
