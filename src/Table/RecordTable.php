@@ -4,6 +4,7 @@ namespace Piggly\Wordpress\Tables;
 
 use Exception;
 use Piggly\Wordpress\Post\CustomPostType;
+use Piggly\Wordpress\Post\Interfaces\PostTypeInterface;
 use WP_List_Table;
 
 /**
@@ -25,9 +26,9 @@ abstract class RecordTable extends WP_List_Table
 	 * Custom post type.
 	 *
 	 * @since 1.0.7
-	 * @var CustomPostType
+	 * @var PostTypeInterface
 	 */
-	protected CustomPostType $postType;
+	protected PostTypeInterface $postType;
 
 	/**
 	 * Constructor, we override the parent to pass our own arguments
@@ -37,7 +38,7 @@ abstract class RecordTable extends WP_List_Table
 	 * @since 1.0.7
 	 * @return void
 	 */
-	public function __construct(CustomPostType $postType)
+	public function __construct(PostTypeInterface $postType)
 	{
 		$this->postType = $postType;
 		$prefix = $postType::fieldPrefix();

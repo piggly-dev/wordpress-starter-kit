@@ -2,8 +2,6 @@
 
 namespace Piggly\Wordpress\Post;
 
-use DateTime;
-use Piggly\Wordpress\Post\Fields\InputField;
 use Piggly\Wordpress\Repository\WPRepository;
 use Piggly\Wordpress\Tables\RecordTable;
 use Piggly\Wordpress\Core\WP;
@@ -11,10 +9,10 @@ use Exception;
 use Piggly\Wordpress\Connector;
 use Piggly\Wordpress\Core\Scaffold\JSONable;
 use Piggly\Wordpress\Entities\AbstractEntity;
-use Piggly\Wordpress\Helpers\BodyValidator;
 use Piggly\Wordpress\Helpers\RequestBodyParser;
 use Piggly\Wordpress\Post\Fields\Form;
 use Piggly\Wordpress\Post\Fields\SchemaExtractor;
+use Piggly\Wordpress\Post\Interfaces\PostTypeInterface;
 
 /**
  * Manage the custom post type structure.
@@ -29,7 +27,7 @@ use Piggly\Wordpress\Post\Fields\SchemaExtractor;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-abstract class AsyncCustomPostType extends JSONable
+abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 {
 	/**
 	 * ID from query string variable.
@@ -89,6 +87,17 @@ abstract class AsyncCustomPostType extends JSONable
 	public function startup()
 	{
 		WP::add_action('admin_menu', $this, 'add_menu', 99);
+		$this->handlers();
+	}
+
+	/**
+	 * Handle all endpoints.
+	 *
+	 * @since 1.0.12
+	 * @return void
+	 */
+	public function handlers()
+	{
 	}
 
 	/**
@@ -338,89 +347,10 @@ abstract class AsyncCustomPostType extends JSONable
 	}
 
 	/**
-	 * Echo notification in screen.
-	 *
-	 * @param string $message
-	 * @param string $type
-	 * @since 1.0.9
-	 * @return void
-	 */
-	protected function notification(
-		string $message,
-		string $type = 'success'
-	) {
-		echo "<div class=\"notice notice-{$type}\"><p>{$message}</p></div>";
-	}
-
-	/**
-	 * Get the HTML form.
-	 *
-	 * @since 1.0.10
-	 * @return Form
-	 */
-	abstract public function form(): Form;
-
-	/**
-	 * Get custom post type icon.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function getIcon(): string;
-
-	/**
-	 * Get custom post type slug.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function getSlug(): string;
-
-	/**
-	 * Get custom post type singular name.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function singularName(): string;
-
-	/**
-	 * Get custom post type plural name.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function pluralName(): string;
-
-	/**
 	 * Get nonce action name.
 	 *
 	 * @since 1.0.10
 	 * @return string
 	 */
 	abstract public static function nonceAction(): string;
-
-	/**
-	 * Get the current repository.
-	 *
-	 * @since 1.0.10
-	 * @return AbstractEntity
-	 */
-	abstract public static function entityModel(): AbstractEntity;
-
-	/**
-	 * Get the current repository.
-	 *
-	 * @since 1.0.9
-	 * @return WPRepository
-	 */
-	abstract public static function getRepository(): WPRepository;
-
-	/**
-	 * Get the current table.
-	 *
-	 * @since 1.0.9
-	 * @return RecordTable
-	 */
-	abstract public static function getTable();
 }
