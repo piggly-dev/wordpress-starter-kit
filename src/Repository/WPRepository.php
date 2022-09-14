@@ -25,16 +25,17 @@ abstract class WPRepository implements RepositoryInterface
 	 *
 	 * @param mixed $id
 	 * @since 1.0.7
-	 * @return array|null
+	 * @since 1.0.10 controls output
+	 * @return mixed
 	 */
-	public static function byId($id): ?array
+	public static function byId($id, string $output = 'ARRAY_A')
 	{
 		global $wpdb;
 		$table = static::tableName();
 
 		return $wpdb->get_row(
 			$wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $id),
-			\ARRAY_A
+			$output
 		);
 	}
 

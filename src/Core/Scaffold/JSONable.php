@@ -53,16 +53,16 @@ abstract class JSONable extends Initiable
 	 * 'capability' => null, // A capability required to user
 	 *
 	 * @see BodyValidator
-	 * @param array $schema
+	 * @param RequestBodyParser $parser
 	 * @param array $options
 	 * @since 1.0.9
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function parse(array $schema = [], array $options = []): array
+	protected function parse(RequestBodyParser $parser, array $schema = [], array $options = []): array
 	{
 		try {
-			$body = (new RequestBodyParser())->body();
+			$body = $parser->body();
 			$parsed = BodyValidator::validate($body, $schema);
 
 			if (!empty($options['nonce_name'])) {

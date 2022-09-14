@@ -2,14 +2,16 @@
 
 namespace Piggly\Wordpress\Post;
 
-use DateTime;
-use Piggly\Wordpress\Post\Fields\InputField;
-use Piggly\Wordpress\Repository\WPRepository;
 use Piggly\Wordpress\Tables\RecordTable;
 use Piggly\Wordpress\Core\WP;
 use Exception;
 use Piggly\Wordpress\Connector;
 use Piggly\Wordpress\Core\Scaffold\Initiable;
+use Piggly\Wordpress\Entities\AbstractEntity;
+use Piggly\Wordpress\Helpers\BodyValidator;
+use Piggly\Wordpress\Helpers\RequestBodyParser;
+use Piggly\Wordpress\Post\Fields\Form;
+use Piggly\Wordpress\Post\Fields\SchemaExtractor;
 
 /**
  * Manage the custom post type structure.
@@ -41,28 +43,12 @@ abstract class CustomPostType extends Initiable
 	protected string $query_action = 'add';
 
 	/**
-	 * Current fields.
+	 * Current entity.
 	 *
-	 * @since 1.0.7
-	 * @var array
+	 * @since 1.0.10
+	 * @var AbstractEntity
 	 */
-	protected array $current_fields = [];
-
-	/**
-	 * Primary key column name.
-	 *
-	 * @since 1.0.7
-	 * @var string
-	 */
-	protected string $primary_key = 'id';
-
-	/**
-	 * Hide when updating or insertin.
-	 *
-	 * @since 1.0.7
-	 * @var array
-	 */
-	protected array $hidden = [];
+	protected $entity;
 
 	/**
 	 * Version for PGLY WPS SETTINGS lib.
@@ -253,12 +239,9 @@ abstract class CustomPostType extends Initiable
 	 */
 	protected function prepare_fields()
 	{
-		// Default fields data
-		$fields = $this->current_fields;
-
 		// Try to load fields
 		if (!empty($this->query_id)) {
-			$fields = $this->getRepository()::byId($this->query_id);
+			$fields = static::entityModel()::getRepo()::byId($this->query_id, 'OBJECT');
 
 			if (empty($fields)) {
 				throw new Exception(
@@ -271,10 +254,8 @@ abstract class CustomPostType extends Initiable
 				);
 			}
 
-			$fields[$this->primary_key] = $this->query_id;
+			$this->entity = static::entityModel()::fromRecord($fields);
 		}
-
-		$this->current_fields = $fields;
 	}
 
 	/**
@@ -307,49 +288,28 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get fields from post request.
 	 *
+	 * @param RequestBodyParser $requestBody
 	 * @since 1.0.7
 	 * @return void
 	 */
-	protected function get_fields()
+	protected function get_fields(RequestBodyParser $requestBody)
 	{
-		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+		if (!$requestBody->isPOST()) {
 			return;
 		}
 
 		$prefix = $this->fieldPrefix();
-
-		$nonce = \filter_input(
-			\INPUT_POST,
-			$prefix . 'nonce',
-			\FILTER_DEFAULT,
-			\FILTER_NULL_ON_FAILURE
-		);
+		$body = $requestBody->body();
+		$parsed = BodyValidator::validate($body, SchemaExtractor::extract($this->form()->fields()), $prefix);
 
 		/* Verify the nonce before proceeding. */
-		if (empty($nonce) || !\wp_verify_nonce($nonce, $prefix . 'save')) {
+		if (empty($body[$prefix . 'nonce']) || !\wp_verify_nonce($body[$prefix . 'nonce'], $prefix . 'save')) {
 			throw new Exception(
 				'O nonce para o envio do formulário é inválido.'
 			);
 		}
 
-		$fields = $this->fieldsStructure();
-
-		foreach ($fields as $field) {
-			$_post = \filter_input(
-				\INPUT_POST,
-				$field->getNameWithPrefix(),
-				\FILTER_DEFAULT,
-				\FILTER_NULL_ON_FAILURE
-			);
-
-			if ($field->isRequired() && empty($_post)) {
-				throw new Exception(
-					"Campo `{$field->getLabel()}` é obrigatório para prosseguir."
-				);
-			}
-
-			$this->current_fields[$field->getName()] = $field->parse($_post);
-		}
+		$this->entity = static::entityModel()::fromBody($parsed);
 	}
 
 	/**
@@ -360,32 +320,14 @@ abstract class CustomPostType extends Initiable
 	 */
 	protected function edit(): void
 	{
-		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+		$requestBody = new RequestBodyParser();
+
+		if (!$requestBody->isPOST()) {
 			return;
 		}
 
-		$this->get_fields();
-		$this->current_fields['updated_at'] = new DateTime(
-			'now',
-			wp_timezone()
-		);
-
-		if (!empty($this->current_fields[$this->primary_key])) {
-			$this->getRepository()::update(
-				$this->_removeFromArray($this->current_fields, $this->hidden),
-				[
-					$this->primary_key =>
-						$this->current_fields[$this->primary_key],
-				]
-			);
-		} else {
-			$this->current_fields[
-				$this->primary_key
-			] = $this->getRepository()::insert(
-				$this->_removeFromArray($this->current_fields, $this->hidden),
-				$this->primary_key
-			)[$this->primary_key];
-		}
+		$this->get_fields($requestBody);
+		$this->entity->save();
 
 		$this->notification(
 			\sprintf(
@@ -394,7 +336,7 @@ abstract class CustomPostType extends Initiable
 			)
 		);
 
-		$this->redirectTo($this->current_fields[$this->primary_key]);
+		$this->redirectTo($this->entity->id());
 	}
 
 	/**
@@ -414,8 +356,8 @@ abstract class CustomPostType extends Initiable
 			);
 		}
 
-		$this->getRepository()::delete([
-			$this->primary_key => $this->query_id,
+		static::entityModel()::getRepo()::delete([
+			static::entityModel()::primaryKey() => $this->query_id,
 		]);
 
 		$this->notification(
@@ -485,31 +427,12 @@ abstract class CustomPostType extends Initiable
 	}
 
 	/**
-	 * Remove fields from array.
+	 * Get the HTML form.
 	 *
-	 * @param array $arr
-	 * @param array $remove
-	 * @since 1.0.7
-	 * @return array
+	 * @since 1.0.10
+	 * @return Form
 	 */
-	protected function _removeFromArray(array $arr, array $remove): array
-	{
-		return \array_filter(
-			$arr,
-			function ($k) use ($remove) {
-				return !\in_array($k, $remove);
-			},
-			\ARRAY_FILTER_USE_KEY
-		);
-	}
-
-	/**
-	 * Get the fields structure.
-	 *
-	 * @since 1.0.7
-	 * @return array<InputField>
-	 */
-	abstract public function fieldsStructure(): array;
+	abstract public function form(): Form;
 
 	/**
 	 * Get custom post type icon.
@@ -554,10 +477,10 @@ abstract class CustomPostType extends Initiable
 	/**
 	 * Get the current repository.
 	 *
-	 * @since 1.0.7
-	 * @return WPRepository
+	 * @since 1.0.10
+	 * @return AbstractEntity
 	 */
-	abstract public static function getRepository(): WPRepository;
+	abstract public static function entityModel(): AbstractEntity;
 
 	/**
 	 * Get the current table.
