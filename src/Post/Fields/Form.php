@@ -50,6 +50,7 @@ class Form implements HTMLField
 			'action' => null,
 			'record_id' => null,
 			'method' => 'POST',
+			'submit' => 'Submit'
 		], $options);
 
 		$this->_rows = $rows;
@@ -181,6 +182,9 @@ class Form implements HTMLField
 			$html .= '</div>';
 		}
 
+		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-form--submit\">{$this->_options['submit']}</button>";
+		$html .= '</div></div>';
 		$html .= '</form>';
 
 		echo $html;
