@@ -48,6 +48,7 @@ class Form implements HTMLField
 			'name' => null,
 			'id' => null,
 			'action' => null,
+			'record_id' => null,
 			'method' => 'POST',
 		], $options);
 
@@ -76,6 +77,18 @@ class Form implements HTMLField
 	{
 		return $this->_options['name'];
 	}
+
+	/**
+	 * Get form current record id.
+	 *
+	 * @since 1.0.9
+	 * @return string|null
+	 */
+	public function recordId(): ?string
+	{
+		return $this->_options['record_id'];
+	}
+
 
 	/**
 	 * Get form id.
@@ -122,6 +135,25 @@ class Form implements HTMLField
 	}
 
 	/**
+	 * Get fields.
+	 *
+	 * @since 1.0.10
+	 * @return array
+	 */
+	public function fields(): array
+	{
+		$fields = [];
+
+		foreach ($this->_rows as $row) {
+			foreach ($row as $column) {
+				$fields[] = $column;
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * Render to HTML.
 	 *
 	 * @param mixed $value
@@ -130,7 +162,13 @@ class Form implements HTMLField
 	 */
 	public function render($values = [])
 	{
-		$html  = "<form id=\"{$this->id()}\" name=\"{$this->name()}\" action=\"{$this->action()}\" method=\"{$this->method()}\">";
+		$id = $this->id() ?? '';
+		$name = $this->name() ?? '';
+		$action = $this->action() ?? '';
+		$method = $this->method() ?? '';
+		$recordId = $this->recordId() ?? '';
+
+		$html  = "<form id=\"{$id}\" name=\"{$name}\" action=\"{$action}\" method=\"{$method}\" data-record-id=\"{$recordId}\">";
 
 		foreach ($this->_rows as $row) {
 			$html .= '<div class="pgly-wps--row">';

@@ -25,6 +25,7 @@ class BodyValidator
 	 *
 	 * There are few options available, are they:
 	 *
+	 * 'schema' => [] // Its a wrapper of fields
 	 * 'default' => null, // Default value for field
 	 * 'allowed_values' => null, // An array with allowed values for field
 	 * 'required' => true, // A boolean indication if field is required or not
@@ -33,11 +34,13 @@ class BodyValidator
 	 *
 	 * @param array $raw
 	 * @param array $schema
+	 * @param string $prefix
 	 * @since 1.0.9
+	 * @since 1.0.10 schema option and prefix
 	 * @return array
 	 * @throws Exception
 	 */
-	public static function validate(array $raw, array $schema = []): array
+	public static function validate(array $raw, array $schema = [], string $prefix = ''): array
 	{
 		$isEmpty = function ($var): bool {
 			return !\is_null($var) && $var !== '';
@@ -46,7 +49,12 @@ class BodyValidator
 		$parsed  = [];
 
 		foreach ($schema as $field => $options) {
-			$value = $raw[$field];
+			$value = $raw[$prefix.$field];
+
+			if (!empty($options['schema'])) {
+				$parsed[$field] = static::validate($value, $options['schema'], $prefix);
+				continue;
+			}
 
 			if (!empty($options['allowed_values']) && !\in_array($value, $options['allowed_values'], true)) {
 				$value = $options['default'] ?? null;

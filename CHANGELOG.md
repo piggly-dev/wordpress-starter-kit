@@ -46,3 +46,7 @@
 * [ADD] New fields structure;
 * [ADD] JSONable behavior;
 * [ADD] Async custom post type.
+
+## `1.0.10` at `2022-09-14`
+
+* [ADD] Entity object and its behaviors.
