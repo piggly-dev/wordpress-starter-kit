@@ -46,7 +46,8 @@ class GroupInputForm extends HTMLField
 	{
 		$this->_options = \array_merge([
 			'name' => null,
-			'column_size' => 12
+			'column_size' => 12,
+			'submit' => 'Add data'
 		], $options);
 
 		$this->_rows = $rows;
@@ -128,6 +129,9 @@ class GroupInputForm extends HTMLField
 			$html .= '</div>';
 		}
 
+		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-gform--submit\">{$this->_options['submit']}</button>";
+		$html .= '</div></div>';
 		$html .= '</div>';
 		$html .= '</div>';
 
