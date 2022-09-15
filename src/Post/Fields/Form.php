@@ -17,7 +17,7 @@ use Piggly\Wordpress\Post\Fields\Interfaces\Renderable;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class Form implements HTMLField
+class Form extends HTMLField
 {
 	/**
 	 * Field options.
@@ -74,7 +74,7 @@ class Form implements HTMLField
 	 * @since 1.0.9
 	 * @return string|null
 	 */
-	public function name(): ?string
+	public function name(bool $withPrefix = false): ?string
 	{
 		return $this->_options['name'];
 	}

@@ -122,7 +122,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		add_submenu_page(
 			$slug,
 			'Visualizar ' . static::pluralName(),
-			'Todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			'edit_posts',
 			$slug,
 			'',
