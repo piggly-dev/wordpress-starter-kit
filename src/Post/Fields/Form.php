@@ -50,7 +50,8 @@ class Form extends HTMLField
 			'action' => null,
 			'record_id' => null,
 			'method' => 'POST',
-			'submit' => 'Submit'
+			'submit' => 'Submit',
+			'remove' => 'Remove'
 		], $options);
 
 		$this->_rows = $rows;
@@ -171,6 +172,15 @@ class Form extends HTMLField
 
 		$html  = "<form id=\"{$id}\" name=\"{$name}\" action=\"{$action}\" method=\"{$method}\" data-record-id=\"{$recordId}\">";
 
+		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-form--submit\">{$this->_options['submit']}</button>";
+
+		if (!empty($recordId) || $recordId === 0) {
+			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-form--remove\">{$this->_options['remove']}</button>";
+		}
+
+		$html .= '</div></div>';
+
 		foreach ($this->_rows as $row) {
 			$html .= '<div class="pgly-wps--row">';
 
@@ -184,6 +194,11 @@ class Form extends HTMLField
 
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
 		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-form--submit\">{$this->_options['submit']}</button>";
+
+		if (!empty($recordId) || $recordId === 0) {
+			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-form--remove\">{$this->_options['remove']}</button>";
+		}
+
 		$html .= '</div></div>';
 		$html .= '</form>';
 
