@@ -36,9 +36,9 @@ class ExtendedSingleMediaInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $src
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', $src = '', array $labels = [])
+	public function render($value = '', $src = '', array $labels = []): string
 	{
 		$this->changeValue($value);
 
@@ -71,6 +71,6 @@ class ExtendedSingleMediaInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

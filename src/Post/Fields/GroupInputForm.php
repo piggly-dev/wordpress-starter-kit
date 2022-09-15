@@ -111,9 +111,9 @@ class GroupInputForm extends HTMLField
 	 *
 	 * @param mixed $value
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($values = [])
+	public function render($values = []): string
 	{
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--group\" data-name=\"{$this->name()}\">";
@@ -123,7 +123,7 @@ class GroupInputForm extends HTMLField
 
 			foreach ($row as $column) {
 				$values = $values[$column->name()] ?? [];
-				$column->render(...$values);
+				$html .= $column->render(...$values);
 			}
 
 			$html .= '</div>';
@@ -135,6 +135,6 @@ class GroupInputForm extends HTMLField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

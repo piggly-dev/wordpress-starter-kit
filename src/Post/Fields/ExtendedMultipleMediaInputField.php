@@ -38,9 +38,9 @@ class ExtendedMultipleMediaInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $src
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', $src = '', array $labels = [])
+	public function render($value = '', $src = '', array $labels = []): string
 	{
 		$this->changeValue($value);
 		$lbls = \array_merge(['clean' => 'Clean All', 'select' => 'Add More'], $labels);
@@ -67,6 +67,6 @@ class ExtendedMultipleMediaInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

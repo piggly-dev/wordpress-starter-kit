@@ -160,9 +160,9 @@ class Form extends HTMLField
 	 *
 	 * @param mixed $value
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($values = [])
+	public function render($values = []): string
 	{
 		$id = $this->id() ?? '';
 		$name = $this->name() ?? '';
@@ -186,7 +186,7 @@ class Form extends HTMLField
 
 			foreach ($row as $column) {
 				$values = $values[$column->name()] ?? [];
-				$column->render(...$values);
+				$html .= $column->render(...$values);
 			}
 
 			$html .= '</div>';
@@ -202,6 +202,6 @@ class Form extends HTMLField
 		$html .= '</div></div>';
 		$html .= '</form>';
 
-		echo $html;
+		return $html;
 	}
 }

@@ -36,9 +36,9 @@ class ExtendedCheckboxInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $default
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '')
+	public function render($value = ''): string
 	{
 		$this->changeValue($value);
 
@@ -67,6 +67,6 @@ class ExtendedCheckboxInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }
