@@ -101,7 +101,7 @@ abstract class CustomPostType extends Initiable implements PostTypeInterface
 		$slug = static::getSlug();
 
 		add_menu_page(
-			'Visualizar todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			static::pluralName(),
 			'edit_posts',
 			$slug,
@@ -111,7 +111,7 @@ abstract class CustomPostType extends Initiable implements PostTypeInterface
 
 		add_submenu_page(
 			$slug,
-			'Visualizar todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			'Todos ' . static::pluralName(),
 			'edit_posts',
 			$slug,
@@ -121,8 +121,8 @@ abstract class CustomPostType extends Initiable implements PostTypeInterface
 
 		add_submenu_page(
 			$slug,
-			'Adicionar novo ' . static::singularName(),
-			'Adicionar novo',
+			'Adicionar ' . static::singularName(),
+			'Adicionar ' . static::singularName(),
 			'edit_posts',
 			$slug . '-content',
 			[$this, 'content_page'],
