@@ -337,7 +337,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		$requestBody = new RequestBodyParser();
 
 		if (!$requestBody->isPOST()) {
-			return;
+			throw new Exception('Método HTTP não disponível', 405);
 		}
 
 		$this->get_fields($requestBody);
@@ -351,8 +351,20 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 	 * @return bool
 	 * @throws Exception
 	 */
-	protected function remove(string $id): bool
+	protected function remove(): bool
 	{
+		$requestBody = new RequestBodyParser();
+
+		if (!$requestBody->isPOST()) {
+			throw new Exception('Método HTTP não disponível', 405);
+		}
+
+		$id = $requestBody->body()['id'] ?? null;
+
+		if (empty($id)) {
+			throw new Exception('O ID é requerido', 422);
+		}
+
 		return static::entityModel()::getRepo()::delete([
 			static::entityModel()::primaryKey() => $id,
 		]);
