@@ -337,7 +337,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		$requestBody = new RequestBodyParser();
 
 		if (!$requestBody->isPOST()) {
-			throw new Exception('Método HTTP não disponível', 405);
+			throw new Exception('Método HTTP não disponível.', 405);
 		}
 
 		$this->get_fields($requestBody);
@@ -356,25 +356,20 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		$requestBody = new RequestBodyParser();
 
 		if (!$requestBody->isPOST()) {
-			throw new Exception('Método HTTP não disponível', 405);
+			throw new Exception('Método HTTP não disponível.', 405);
 		}
 
-		$id = $requestBody->body()['id'] ?? null;
+		$body = $requestBody->body();
+		$this->authorizationCheck($body);
+
+		$id = $body['id'] ?? null;
 
 		if (empty($id)) {
-			throw new Exception('O ID é requerido', 422);
+			throw new Exception('O ID é requerido.', 422);
 		}
 
 		return static::entityModel()::getRepo()::delete([
 			static::entityModel()::primaryKey() => $id,
 		]);
 	}
-
-	/**
-	 * Get nonce action name.
-	 *
-	 * @since 1.0.10
-	 * @return string
-	 */
-	abstract public static function nonceAction(): string;
 }

@@ -64,25 +64,36 @@ abstract class JSONable extends Initiable
 		try {
 			$body = $parser->body();
 			$parsed = BodyValidator::validate($body, $schema);
-
-			if (!empty($options['nonce_name'])) {
-				if (
-					empty($body[$options['nonce_name']])
-					|| !\wp_verify_nonce($body[$options['nonce_name']], $options['nonce_action'])
-				) {
-					$this->status(401)->error(new Exception('O nonce para o envio do formulário é inválido.', 401));
-				}
-			}
-
-			if (!empty($options['capability'])) {
-				if (!\current_user_can($options['capability'])) {
-					$this->status(403)->error(new Exception('Acesso não autorizado.', 403));
-				}
-			}
-
+			$this->authorizationCheck($body);
 			return $parsed;
 		} catch (Exception $e) {
 			$this->status(422)->error($e);
+		}
+	}
+
+	/**
+	 * Check if has authorization.
+	 *
+	 * @since 1.0.12
+	 * @return void
+	 */
+	protected function authorizationCheck(array $body): void
+	{
+		$options = ['nonce_name' => 'x_security', 'nonce_action' => static::nonceAction(), 'capability' => static::capability() ];
+
+		if (!empty($options['nonce_name'])) {
+			if (
+					empty($body[$options['nonce_name']])
+					|| !\wp_verify_nonce($body[$options['nonce_name']], $options['nonce_action'])
+				) {
+				$this->status(401)->error(new Exception('O nonce para o envio do formulário é inválido.', 401));
+			}
+		}
+
+		if (!empty($options['capability'])) {
+			if (!\current_user_can($options['capability'])) {
+				$this->status(403)->error(new Exception('Acesso não autorizado.', 403));
+			}
 		}
 	}
 
@@ -155,4 +166,23 @@ abstract class JSONable extends Initiable
 		\wp_send_json_error($err, $this->_status_code);
 		exit;
 	}
+
+	/**
+	 * Get capability to edit/remove.
+	 *
+	 * @since 1.0.12
+	 * @return string
+	 */
+	public static function capability(): string
+	{
+		return '';
+	}
+
+	/**
+	 * Get nonce action name.
+	 *
+	 * @since 1.0.12
+	 * @return string
+	 */
+	abstract public static function nonceAction(): string;
 }
