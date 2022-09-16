@@ -4,6 +4,7 @@ namespace Piggly\Wordpress\Entities;
 
 use DateTime;
 use Exception;
+use Piggly\Wordpress\Post\Fields\Form;
 use Piggly\Wordpress\Repository\WPRepository;
 use stdClass;
 
@@ -255,4 +256,12 @@ abstract class AbstractEntity
 	 * @return WPRepository
 	 */
 	abstract public static function getRepo(): WPRepository;
+
+	/**
+	 * Get the HTML form.
+	 *
+	 * @since 1.0.12
+	 * @return Form
+	 */
+	abstract public static function form(): Form;
 }
