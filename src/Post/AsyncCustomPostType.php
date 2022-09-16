@@ -155,30 +155,30 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		\wp_enqueue_script(
 			'axios',
 			'https://unpkg.com/axios/dist/axios.min.js',
+			null,
 			'0.27.2',
-			Connector::plugin()->getVersion(),
 			true
 		);
 
 
 		\wp_enqueue_script(
 			$name,
-			Connector::plugin()->getUrl() . '/assets/vendor/js/pgly-wps-settings.js',
+			Connector::plugin()->getUrl() . 'assets/vendor/js/pgly-wps-settings.js',
 			['axios'],
-			Connector::plugin()->getVersion(),
+			$this->js_version,
 			true
 		);
 
 		\wp_enqueue_style(
 			$name,
-			Connector::plugin()->getUrl() . '/assets/vendor/css/pgly-wps-settings.min.css',
+			Connector::plugin()->getUrl() . 'assets/vendor/css/pgly-wps-settings.min.css',
 			null,
-			Connector::plugin()->getVersion(),
+			$this->js_version,
 			'all'
 		);
 
 		\wp_localize_script(
-			$name,
+			static::getSlug(),
 			Connector::plugin()->getName(),
 			[
 				'ajax_url' => admin_url('admin-ajax.php'),

@@ -42,7 +42,7 @@ class BodyValidator
 	 */
 	public static function validate(array $raw, array $schema = [], string $prefix = ''): array
 	{
-		$isEmpty = function ($var): bool {
+		$isFilled = function ($var): bool {
 			return !\is_null($var) && $var !== '';
 		};
 
@@ -60,7 +60,7 @@ class BodyValidator
 				$value = $options['default'] ?? null;
 			}
 
-			if ($isEmpty($value) && $options['required']) {
+			if (!$isFilled($value) && $options['required']) {
 				throw new Exception(\sprintf('(%s) => O campo é obrigatório...', $field));
 			}
 
