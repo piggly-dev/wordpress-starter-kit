@@ -185,6 +185,15 @@ abstract class AbstractEntity
 	abstract public function toArray(): array;
 
 	/**
+	 * Get the HTML form.
+	 *
+	 * @param array $options
+	 * @since 1.0.12
+	 * @return Form
+	 */
+	abstract public function form(array $options = []): Form;
+
+	/**
 	 * Prepare fields before save.
 	 *
 	 * @since 1.0.10
@@ -256,13 +265,4 @@ abstract class AbstractEntity
 	 * @return WPRepository
 	 */
 	abstract public static function getRepo(): WPRepository;
-
-	/**
-	 * Get the HTML form.
-	 *
-	 * @param array $options
-	 * @since 1.0.12
-	 * @return Form
-	 */
-	abstract public static function form(array $options = []): Form;
 }
