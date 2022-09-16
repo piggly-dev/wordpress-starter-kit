@@ -234,17 +234,6 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 	}
 
 	/**
-	 * Get the HTML form.
-	 *
-	 * @since 1.0.12
-	 * @return Form
-	 */
-	public function form(): Form
-	{
-		return $this->entity::form();
-	}
-
-	/**
 	 * Fill query values from query string data.
 	 *
 	 * @since 1.0.9

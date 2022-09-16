@@ -260,8 +260,9 @@ abstract class AbstractEntity
 	/**
 	 * Get the HTML form.
 	 *
+	 * @param array $options
 	 * @since 1.0.12
 	 * @return Form
 	 */
-	abstract public static function form(): Form;
+	abstract public static function form(array $options = []): Form;
 }
