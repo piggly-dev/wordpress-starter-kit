@@ -178,7 +178,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 		);
 
 		\wp_localize_script(
-			static::getSlug(),
+			$name,
 			Connector::plugin()->getName(),
 			[
 				'ajax_url' => admin_url('admin-ajax.php'),

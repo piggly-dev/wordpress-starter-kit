@@ -167,6 +167,23 @@ abstract class AbstractEntity
 	}
 
 	/**
+	 * Convert entity to a form default values array
+	 * to render data to HTML.
+	 *
+	 * @since 1.0.12
+	 * @return array
+	 */
+	abstract public function toFormArray(): array;
+
+	/**
+	 * Convert entity to an array.
+	 *
+	 * @since 1.0.12
+	 * @return array
+	 */
+	abstract public function toArray(): array;
+
+	/**
 	 * Prepare fields before save.
 	 *
 	 * @since 1.0.10
@@ -200,10 +217,11 @@ abstract class AbstractEntity
 	 * Create entity object from parsed body.
 	 *
 	 * @param array $parsed Parsed body.
+	 * @param array $raw Raw body.
 	 * @since 1.0.10
 	 * @return self
 	 */
-	abstract public static function fromBody(array $parsed);
+	abstract public static function fromBody(array $parsed, array $raw = []);
 
 	/**
 	 * Create entity object from record object.
