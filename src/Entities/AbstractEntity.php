@@ -63,6 +63,12 @@ abstract class AbstractEntity
 	 */
 	public function set(string $field, $value)
 	{
+		$func = 'mutate_'.$field;
+
+		if (\method_exists($this, $func)) {
+			$value = $this->{$func}($value);
+		}
+
 		$this->_fields[$field] = $value;
 		return $this;
 	}
