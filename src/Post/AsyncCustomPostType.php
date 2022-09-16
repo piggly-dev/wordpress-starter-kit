@@ -321,7 +321,8 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 				$requestBody,
 				SchemaExtractor::extract($this->form()->fields()),
 				['nonce_name' => 'x_security', 'nonce_action' => static::nonceAction()]
-			)
+			),
+			$requestBody->body()
 		);
 	}
 
