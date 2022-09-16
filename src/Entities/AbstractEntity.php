@@ -94,12 +94,12 @@ abstract class AbstractEntity
 	 */
 	public function save()
 	{
-		$this->_prepareFields();
+		$fields = $this->_prepare();
 
 		try {
 			if ($this->isCreated()) {
 				static::getRepo()::update(
-					$this->_removeFromArray($this->_fields, $this->_hidden),
+					$this->_removeFromArray($fields, $this->_hidden),
 					[static::primaryKey() => $this->id()]
 				);
 
@@ -107,7 +107,7 @@ abstract class AbstractEntity
 			}
 
 			$this->_fields[static::primaryKey()] = static::getRepo()::insert(
-				$this->_removeFromArray($this->_fields, $this->_hidden),
+				$this->_removeFromArray($fields, $this->_hidden),
 				static::primaryKey()
 			)[static::primaryKey()];
 			return true;
@@ -203,11 +203,14 @@ abstract class AbstractEntity
 	 * Prepare fields before save.
 	 *
 	 * @since 1.0.10
-	 * @return void
+	 * @return array
 	 */
-	protected function _prepareFields(): void
+	protected function _prepare(): array
 	{
-		$this->_fields['updated_at'] = new DateTime('now', \wp_timezone());
+		$fields = $this->_fields;
+
+		$fields['updated_at'] = new DateTime('now', \wp_timezone());
+		return $fields;
 	}
 
 	/**
