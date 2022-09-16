@@ -135,7 +135,7 @@ abstract class AbstractEntity
 	 */
 	public function id()
 	{
-		return $this->fields[static::primaryKey()] ?? null;
+		return $this->_fields[static::primaryKey()] ?? null;
 	}
 
 	/**
@@ -146,7 +146,7 @@ abstract class AbstractEntity
 	 */
 	public function isCreated(): bool
 	{
-		return isset($this->fields[static::primaryKey()]);
+		return isset($this->_fields[static::primaryKey()]);
 	}
 
 	/**

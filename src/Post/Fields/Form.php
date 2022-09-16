@@ -173,10 +173,10 @@ class Form extends HTMLField
 		$html  = "<form id=\"{$id}\" name=\"{$name}\" action=\"{$action}\" method=\"{$method}\" data-record-id=\"{$recordId}\">";
 
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
-		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-form--submit\">{$this->_options['submit']}</button>";
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-async--behavior pgly-form--submit\">{$this->_options['submit']}<svg class=\"pgly-wps--spinner pgly-wps-is-white\" viewBox=\"0 0 50 50\"><circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle></svg></button>";
 
 		if (!empty($recordId) || $recordId === 0) {
-			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-form--remove\">{$this->_options['remove']}</button>";
+			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-async--behavior pgly-form--remove\">{$this->_options['remove']}<svg class=\"pgly-wps--spinner pgly-wps-is-white\" viewBox=\"0 0 50 50\"><circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle></svg></button>";
 		}
 
 		$html .= '</div></div>';
@@ -193,10 +193,10 @@ class Form extends HTMLField
 		}
 
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
-		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-form--submit\">{$this->_options['submit']}</button>";
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-async--behavior pgly-form--submit\">{$this->_options['submit']}<svg class=\"pgly-wps--spinner pgly-wps-is-white\" viewBox=\"0 0 50 50\"><circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle></svg></button>";
 
 		if (!empty($recordId) || $recordId === 0) {
-			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-form--remove\">{$this->_options['remove']}</button>";
+			$html .= "<button class=\"pgly-wps--button pgly-wps-is-danger pgly-async--behavior pgly-form--remove\">{$this->_options['remove']}<svg class=\"pgly-wps--spinner pgly-wps-is-white\" viewBox=\"0 0 50 50\"><circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle></svg></button>";
 		}
 
 		$html .= '</div></div>';
