@@ -116,7 +116,7 @@ class GroupInputForm extends HTMLField
 	public function render($values = []): string
 	{
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--group\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--group pgly-form--input pgly-form--group\" data-name=\"{$this->name()}\">";
 
 		foreach ($this->_rows as $row) {
 			$html .= '<div class="pgly-wps--row">';
@@ -132,6 +132,7 @@ class GroupInputForm extends HTMLField
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
 		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-gform--submit\">{$this->_options['submit']}</button>";
 		$html .= '</div></div>';
+		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column pgly-wps--items"></div></div>';
 		$html .= '</div>';
 		$html .= '</div>';
 

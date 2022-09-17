@@ -46,7 +46,7 @@ abstract class AbstractEntity
 	 * @param string $field
 	 * @param mixed $default
 	 * @since 1.0.10
-	 * @return void
+	 * @return mixed
 	 */
 	public function get(string $field, $default = null)
 	{
