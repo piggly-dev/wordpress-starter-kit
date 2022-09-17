@@ -47,7 +47,7 @@ class SelectInputField extends InputField
 		$vl = $this->value();
 
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--select\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--select\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";

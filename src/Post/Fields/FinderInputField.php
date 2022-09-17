@@ -42,11 +42,11 @@ class FinderSelectInputField extends InputField
 	{
 		$this->changeValue($value);
 
-		$vl = $this->value() ? 'true' : 'false';
+		$vl = $this->value();
 		$lbls = \array_merge(['search' => 'Search', 'unselect' => 'Unselect'], $labels);
 
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--finder\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--finder\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";

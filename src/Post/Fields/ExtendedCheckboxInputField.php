@@ -46,7 +46,7 @@ class ExtendedCheckboxInputField extends InputField
 		$vl = $this->value() ? 'true' : 'false';
 
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--checkbox\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--checkbox\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";

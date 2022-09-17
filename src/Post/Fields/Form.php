@@ -185,8 +185,8 @@ class Form extends HTMLField
 			$html .= '<div class="pgly-wps--row">';
 
 			foreach ($row as $column) {
-				$values = $values[$column->name()] ?? [];
-				$html .= $column->render(...$values);
+				$_values = $values[$column->name()] ?? [];
+				$html .= $column->render(...$_values);
 			}
 
 			$html .= '</div>';

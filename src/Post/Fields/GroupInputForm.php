@@ -117,13 +117,14 @@ class GroupInputForm extends HTMLField
 	{
 		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--group pgly-form--input pgly-form--group\" data-name=\"{$this->name()}\">";
+		$html .= '<span class="pgly-wps--message"></span>';
 
 		foreach ($this->_rows as $row) {
 			$html .= '<div class="pgly-wps--row">';
 
 			foreach ($row as $column) {
-				$values = $values[$column->name()] ?? [];
-				$html .= $column->render(...$values);
+				$_values = $values[$column->name()] ?? [];
+				$html .= $column->render(...$_values);
 			}
 
 			$html .= '</div>';
