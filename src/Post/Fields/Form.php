@@ -49,6 +49,7 @@ class Form extends HTMLField
 			'id' => null,
 			'action' => null,
 			'record_id' => null,
+			'attrs' => [],
 			'method' => 'POST',
 			'submit' => 'Submit',
 			'remove' => 'Remove'
@@ -91,7 +92,6 @@ class Form extends HTMLField
 		return $this->_options['record_id'];
 	}
 
-
 	/**
 	 * Get form id.
 	 *
@@ -101,6 +101,17 @@ class Form extends HTMLField
 	public function id(): ?string
 	{
 		return $this->_options['id'];
+	}
+
+	/**
+	 * Get form attrs.
+	 *
+	 * @since 1.0.12
+	 * @return array
+	 */
+	public function attrs(): array
+	{
+		return $this->_options['attrs'] ?? [];
 	}
 
 	/**
@@ -169,8 +180,9 @@ class Form extends HTMLField
 		$action = $this->action() ?? '';
 		$method = $this->method() ?? '';
 		$recordId = $this->recordId() ?? '';
+		$attrs = \implode(' ', $this->attrs());
 
-		$html  = "<form id=\"{$id}\" name=\"{$name}\" action=\"{$action}\" method=\"{$method}\" data-record-id=\"{$recordId}\">";
+		$html  = "<form id=\"{$id}\" name=\"{$name}\" action=\"{$action}\" method=\"{$method}\" data-record-id=\"{$recordId}\" {$attrs}>";
 
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
 		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-async--behaviour pgly-form--submit\">{$this->_options['submit']}<svg class=\"pgly-wps--spinner pgly-wps-is-white\" viewBox=\"0 0 50 50\"><circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle></svg></button>";
