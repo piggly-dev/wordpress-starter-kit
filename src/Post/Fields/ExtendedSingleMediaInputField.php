@@ -45,7 +45,7 @@ class ExtendedSingleMediaInputField extends InputField
 		$vl = $this->value() ? 'true' : 'false';
 		$lbls = \array_merge(['clean' => 'Clean Selection', 'select' => 'Select'], $labels);
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--single-media\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {

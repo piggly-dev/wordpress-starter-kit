@@ -197,6 +197,11 @@ class Form extends HTMLField
 			$html .= '<div class="pgly-wps--row">';
 
 			foreach ($row as $column) {
+				if (\is_string($column)) {
+					$html .= $column;
+					continue;
+				}
+
 				$_values = $values[$column->name()] ?? [];
 				$html .= $column->render(...$_values);
 			}

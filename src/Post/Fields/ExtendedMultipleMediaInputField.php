@@ -45,7 +45,7 @@ class ExtendedMultipleMediaInputField extends InputField
 		$this->changeValue($value);
 		$lbls = \array_merge(['clean' => 'Clean All', 'select' => 'Add More'], $labels);
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--multiple-media\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {

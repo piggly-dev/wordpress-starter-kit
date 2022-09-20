@@ -115,7 +115,7 @@ class GroupInputForm extends HTMLField
 	 */
 	public function render($values = []): string
 	{
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
 		$html .= "<div class=\"pgly-wps--group pgly-form--input pgly-form--group\" data-name=\"{$this->name()}\">";
 		$html .= '<span class="pgly-wps--message"></span>';
 
