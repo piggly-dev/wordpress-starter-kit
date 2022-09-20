@@ -52,7 +52,12 @@ class BodyValidator
 			$value = $raw[$prefix.$field];
 
 			if (!empty($options['schema'])) {
-				$parsed[$field] = static::validate($value, $options['schema'], $prefix);
+				$parsed[$field] = [];
+
+				foreach ($value as $item) {
+					$parsed[$field][] = static::validate($item, $options['schema'], $prefix);
+				}
+
 				continue;
 			}
 

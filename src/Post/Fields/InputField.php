@@ -215,6 +215,6 @@ abstract class InputField extends HTMLField
 	 */
 	protected function getCssForm()
 	{
-		return $this->_options['on_group'] ? 'pgly-gform' : '{$this->getCssForm()}';
+		return $this->_options['on_group'] ? 'pgly-gform' : 'pgly-form';
 	}
 }
