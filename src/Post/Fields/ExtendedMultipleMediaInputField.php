@@ -28,6 +28,10 @@ class ExtendedMultipleMediaInputField extends InputField
 
 		$this->_options['parse'] = function ($value) {
 			return \array_map(function ($v) {
+				if (empty($value)) {
+					return null;
+				}
+
 				return \intval($v);
 			}, $value);
 		};
@@ -54,6 +58,10 @@ class ExtendedMultipleMediaInputField extends InputField
 
 		$html .= '<div class="pgly-wps--images"></div>';
 		$html .= '<span class="pgly-wps--message"></span>';
+
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px;">Obrigatório</span>';
+		}
 
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";

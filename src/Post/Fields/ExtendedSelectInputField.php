@@ -27,6 +27,9 @@ class ExtendedSelectInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
 			return \esc_attr($value);
 		};
 	}
@@ -71,6 +74,10 @@ class ExtendedSelectInputField extends InputField
 		</div>";
 
 		$html .= '<span class="pgly-wps--message"></span>';
+
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px;">Obrigatório</span>';
+		}
 
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";

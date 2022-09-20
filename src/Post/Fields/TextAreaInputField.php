@@ -3,19 +3,19 @@
 namespace Piggly\Wordpress\Post\Fields;
 
 /**
- * Base implementation to a text input field.
+ * Base implementation to a textarea input field.
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Fields
- * @version 1.0.7
- * @since 1.0.7
+ * @version 1.0.9
+ * @since 1.0.9
  * @category Fields
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class ExtendedSingleMediaInputField extends InputField
+class TextAreaInputField extends InputField
 {
 	/**
 	 * Class constructor.
@@ -30,36 +30,34 @@ class ExtendedSingleMediaInputField extends InputField
 			if (empty($value)) {
 				return null;
 			}
-			return \intval($value);
+
+			return \esc_attr($value);
 		};
 	}
+
 	/**
 	 * Render to HTML with value.
 	 *
 	 * @param mixed $value
-	 * @param mixed $src
+	 * @param mixed $default
 	 * @since 1.0.9
 	 * @return string
 	 */
-	public function render($value = '', $src = '', array $labels = []): string
+	public function render($value = ''): string
 	{
 		$this->changeValue($value);
 
-		$vl = $this->value() ? 'true' : 'false';
-		$lbls = \array_merge(['clean' => 'Clean Selection', 'select' => 'Select'], $labels);
+		$id = $this->name(true);
+		$vl = $this->value();
 
 		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--single-media\" data-name=\"{$this->name()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--textarea\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<div class=\"container\">
-			<img data-value=\"{$vl}\" data-src=\"{$src}\" />
-			<span class=\"pgly-wps--placeholder\">{$this->placeholder()}</span>
-		</div>";
-
+		$html .= "<textarea id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\">{$vl}</textarea>";
 		$html .= '<span class="pgly-wps--message"></span>';
 
 		if ($this->isRequired()) {
@@ -69,11 +67,6 @@ class ExtendedSingleMediaInputField extends InputField
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
-
-		$html .= "<div class=\"pgly-wps--action-bar\">
-			<button class=\"pgly-wps--button pgly-wps-is-compact pgly-wps-is-primary pgly-wps--select\">{$lbls['select']}</button>
-			<button class=\"pgly-wps--button pgly-wps-is-compact pgly-wps-is-danger pgly-wps--clean\">{$lbls['clean']}</button>
-		</div>";
 
 		$html .= '</div>';
 		$html .= '</div>';
