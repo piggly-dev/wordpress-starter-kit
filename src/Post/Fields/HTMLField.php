@@ -81,4 +81,15 @@ abstract class HTMLField implements Renderable
 	{
 		return $this->_options;
 	}
+
+	/**
+	 * Force field to be on group.
+	 *
+	 * @since 1.0.12
+	 * @return void
+	 */
+	public function onGroup(): void
+	{
+		$this->_options['on_group'] = true;
+	}
 }

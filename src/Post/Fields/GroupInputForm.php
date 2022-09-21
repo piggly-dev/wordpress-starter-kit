@@ -123,6 +123,7 @@ class GroupInputForm extends HTMLField
 			$html .= '<div class="pgly-wps--row">';
 
 			foreach ($row as $column) {
+				$column->onGroup();
 				$_values = $values[$column->name()] ?? [];
 				$html .= $column->render(...$_values);
 			}

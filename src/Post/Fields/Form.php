@@ -167,6 +167,18 @@ class Form extends HTMLField
 	}
 
 	/**
+	 * Convert form to a group.
+	 *
+	 * @param array $options
+	 * @since 1.0.12
+	 * @return GroupInputForm
+	 */
+	public function toGroup(array $options): GroupInputForm
+	{
+		return new GroupInputForm($options, $this->_rows);
+	}
+
+	/**
 	 * Render to HTML.
 	 *
 	 * @param mixed $value
