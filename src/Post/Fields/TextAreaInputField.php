@@ -58,11 +58,12 @@ class TextAreaInputField extends InputField
 		}
 
 		$html .= "<textarea id=\"{$id}\" name=\"{$id}\" placeholder=\"{$this->placeholder()}\">{$vl}</textarea>";
-		$html .= '<span class="pgly-wps--message"></span>';
 
 		if ($this->isRequired()) {
-			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px;">Obrigatório</span>';
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px; margin-right: 6px">Obrigatório</span>';
 		}
+
+		$html .= '<span class="pgly-wps--message"></span>';
 
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
