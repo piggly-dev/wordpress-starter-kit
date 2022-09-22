@@ -136,7 +136,7 @@ class GroupInputForm extends HTMLField
 
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column">';
 		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-gform--submit\">{$this->_options['submit']}</button>";
-		$html .= "<button class=\"pgly-wps--button pgly-wps-is-primary pgly-gform--cancel\">{$this->_options['cancel']}</button>";
+		$html .= "<button class=\"pgly-wps--button pgly-wps-is-secondary pgly-gform--cancel\">{$this->_options['cancel']}</button>";
 		$html .= '</div></div>';
 		$html .= '<div class="pgly-wps--row"><div class="pgly-wps--column pgly-wps--items"></div></div>';
 		$html .= '</div>';
