@@ -167,6 +167,27 @@ class Form extends HTMLField
 	}
 
 	/**
+	 * Unset field.
+	 *
+	 * @param string $name
+	 * @since 0.1.0
+	 * @return self
+	 */
+	public function unset(string $name)
+	{
+		foreach ($this->_rows as $row_idx => $row) {
+			foreach ($row as $field_idx => $field) {
+				if ($field->name() === $name) {
+					unset($this->_rows[$row_idx][$field_idx]);
+					return $this;
+				}
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Convert form to a group.
 	 *
 	 * @param array $options
