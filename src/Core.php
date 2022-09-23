@@ -152,6 +152,7 @@ abstract class Core extends Initiable
 					$html = '<div class="notice notice-error">';
 					$html .= "<p>{$response}</p>";
 					$html .= "<p>{$e->getMessage()}</p>";
+					$html .= "</div>";
 
 					if (isset($_GET['activate'])) {
 						unset($_GET['activate']);
