@@ -64,7 +64,7 @@ abstract class JSONable extends Initiable
 		try {
 			$body = $parser->body();
 			$parsed = BodyValidator::validate($body, $schema);
-			$this->authorizationCheck($body);
+			$this->authorizationCheck($body, $options);
 			return $parsed;
 		} catch (Exception $e) {
 			$this->status(422)->error($e);
@@ -74,12 +74,24 @@ abstract class JSONable extends Initiable
 	/**
 	 * Check if has authorization.
 	 *
+	 * There are few options available, are they:
+	 *
+	 * 'nonce_name' => null, // Nonce field name at body to validate
+	 * 'nonce_action' => -1, // An array with allowed values for field
+	 * 'capability' => null, // A capability required to user
+	 *
+	 * @param array $body
+	 * @param array $options
 	 * @since 1.0.12
 	 * @return void
 	 */
-	protected function authorizationCheck(array $body): void
+	protected function authorizationCheck(array $body, array $options = []): void
 	{
-		$options = ['nonce_name' => 'x_security', 'nonce_action' => static::nonceAction(), 'capability' => static::capability() ];
+		$options = \array_merge([
+			'nonce_name' => 'x_security',
+			'nonce_action' => static::nonceAction(),
+			'capability' => static::capability()
+		], $options);
 
 		if (!empty($options['nonce_name'])) {
 			if (

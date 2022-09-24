@@ -209,7 +209,7 @@ abstract class AbstractEntity
 	{
 		$fields = $this->_fields;
 
-		$fields['updated_at'] = new DateTime('now', \wp_timezone());
+		$fields['updated_at'] = (new DateTime('now', \wp_timezone()))->format('Y-m-d\TH:i:s');
 		return $fields;
 	}
 
