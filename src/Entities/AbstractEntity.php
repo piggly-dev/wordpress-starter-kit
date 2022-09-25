@@ -255,10 +255,11 @@ abstract class AbstractEntity
 	/**
 	 * Create entity object with defaults.
 	 *
-	 * @since 1.0.10
+	 * @param mixed $options
+	 * @since 1.0.12
 	 * @return self
 	 */
-	abstract public static function create();
+	abstract public static function create(array $options = null);
 
 	/**
 	 * Get the primary key column name.
