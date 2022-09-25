@@ -185,10 +185,11 @@ abstract class AbstractEntity
 	/**
 	 * Convert entity to an array.
 	 *
+	 * @param array $base
 	 * @since 1.0.12
 	 * @return array
 	 */
-	abstract public function toArray(): array;
+	abstract public function toArray(array $base = []): array;
 
 	/**
 	 * Get the HTML form.
