@@ -280,11 +280,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 
 			if (empty($fields)) {
 				throw new Exception(
-					\sprintf(
-						'O %s não foi localizado, tente novamente mais tarde ou selecione outro %s.',
-						static::singularName(),
-						static::singularName()
-					),
+					'O registro não foi localizado, tente novamente mais tarde ou selecione outro registro.',
 					404
 				);
 			}
