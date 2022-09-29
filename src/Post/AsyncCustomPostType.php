@@ -267,12 +267,13 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 	/**
 	 * Prepare fields to editing.
 	 *
+	 * @param array $options
 	 * @since 1.0.9
 	 * @return void
 	 */
-	protected function prepare_fields()
+	protected function prepare_fields(array $options = [])
 	{
-		$this->entity = static::entityModel()::create();
+		$this->entity = static::entityModel($options);
 
 		// Try to load fields
 		if (!empty($this->query_id)) {
