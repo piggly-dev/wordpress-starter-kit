@@ -223,7 +223,7 @@ abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 				$e->getMessage() .
 				'</p></div>';
 
-			if ($e->getCode(404)) {
+			if ($e->getCode() === 404) {
 				exit;
 			}
 		}
