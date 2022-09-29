@@ -54,8 +54,8 @@ class ExtendedSelectInputField extends InputField
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<div class=\"pgly-wps--select\" data-value=\"{$this->value()}\" data-label=\"{$lbl}\">
-			<div class=\"selected empty\">
+		$html .= "<div class=\"pgly-wps--select\">
+			<div class=\"selected empty\" data-value=\"{$this->value()}\" data-label=\"{$lbl}\">
 				<span>{$this->placeholder()}</span>
 				<svg class=\"pgly-wps--arrow\" height=\"48\" viewBox=\"0 0 48 48\" width=\"48\"
 					xmlns=\"http://www.w3.org/2000/svg\">
