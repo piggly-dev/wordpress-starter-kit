@@ -259,7 +259,7 @@ abstract class AbstractEntity
 	 * @since 1.0.12
 	 * @return self
 	 */
-	abstract public static function create(array $options = null);
+	abstract public static function create(array $options = []);
 
 	/**
 	 * Get the primary key column name.

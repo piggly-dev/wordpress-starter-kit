@@ -46,16 +46,15 @@ class ExtendedSelectInputField extends InputField
 		$this->changeValue($value);
 
 		$id = $this->name(true);
-		$vl = $this->value() ? 'true' : 'false';
 
 		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--eselect\" data-name=\"{$this->name()}\">";
+		$html .= "<div id=\"{$id}\" class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--eselect\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<div class=\"pgly-wps--select\" data-value=\"{$vl}\" data-label=\"{$lbl}\">
+		$html .= "<div class=\"pgly-wps--select\" data-value=\"{$this->value()}\" data-label=\"{$lbl}\">
 			<div class=\"selected empty\">
 				<span>{$this->placeholder()}</span>
 				<svg class=\"pgly-wps--arrow\" height=\"48\" viewBox=\"0 0 48 48\" width=\"48\"

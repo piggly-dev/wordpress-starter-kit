@@ -44,8 +44,6 @@ class ExtendedSingleMediaInputField extends InputField
 	public function render($value = '', $src = '', array $labels = []): string
 	{
 		$this->changeValue($value);
-
-		$vl = $this->value() ? 'true' : 'false';
 		$lbls = \array_merge(['clean' => 'Clean Selection', 'select' => 'Select'], $labels);
 
 		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
@@ -56,7 +54,7 @@ class ExtendedSingleMediaInputField extends InputField
 		}
 
 		$html .= "<div class=\"container\">
-			<img data-value=\"{$vl}\" data-src=\"{$src}\" />
+			<img data-value=\"{$this->value()}\" data-src=\"{$src}\" />
 			<span class=\"pgly-wps--placeholder\">{$this->placeholder()}</span>
 		</div>";
 
