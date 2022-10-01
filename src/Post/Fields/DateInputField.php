@@ -9,28 +9,28 @@ use DateTimeImmutable;
  *
  * @package \Piggly\Wordpress
  * @subpackage \Piggly\Wordpress\Fields
- * @version 1.0.7
- * @since 1.0.7
+ * @version 1.0.12
+ * @since 1.0.12
  * @category Fields
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class DateTimeInputField extends TextInputField
+class DateInputField extends TextInputField
 {
 	/**
 	 * Input type.
 	 *
-	 * @since 1.0.9
+	 * @since 1.0.12
 	 * @var string
 	 */
-	protected $type = 'datetime-local';
+	protected $type = 'date';
 
 	/**
 	 * Class constructor.
 	 *
-	 * @since 1.0.9
+	 * @since 1.0.12
 	 */
 	public function __construct(array $options)
 	{
@@ -42,10 +42,10 @@ class DateTimeInputField extends TextInputField
 			}
 
 			if ($value instanceof DateTimeImmutable) {
-				return \esc_attr($value->format('Y-m-d\TH:i'));
+				return \esc_attr($value->format('Y-m-d'));
 			}
 
-			return \esc_attr((new DateTimeImmutable($value, \wp_timezone()))->format('Y-m-d\TH:i'));
+			return \esc_attr((new DateTimeImmutable($value, \wp_timezone()))->format('Y-m-d'));
 		};
 
 		$this->_options['transform'] = function ($value) {
