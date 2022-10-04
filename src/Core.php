@@ -186,9 +186,9 @@ class Core extends Initiable
 	 * db_version
 	 * min_php_version
 	 *
-	 * activator
-	 * deactivator
-	 * upgrader
+	 * activator class name
+	 * deactivator class name
+	 * upgrader class name
 	 *
 	 * @param string $domain
 	 * @param string $name
@@ -228,9 +228,9 @@ class Core extends Initiable
 
 		$core = new Core(
 			$plugin,
-			$options['activator'] ?? null,
-			$options['deactivator'] ?? null,
-			$options['upgrader'] ?? null
+			$options['activator'] ? $options['activator']($plugin) : null,
+			$options['deactivator'] ? $options['deactivator']($plugin) : null,
+			$options['upgrader'] ? $options['upgrader']($plugin) : null
 		);
 
 		Connector::setInstance($core);
