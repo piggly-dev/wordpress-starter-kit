@@ -57,6 +57,17 @@ class Core extends Initiable
 	}
 
 	/**
+	 * Startup method with all actions and
+	 * filter to run.
+	 *
+	 * @since 1.0.12
+	 * @return void
+	 */
+	public function startup()
+	{
+	}
+
+	/**
 	 * Add a Runnable object as activator to
 	 * register_activation_hook().
 	 *
