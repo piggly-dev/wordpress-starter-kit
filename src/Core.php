@@ -228,9 +228,9 @@ class Core extends Initiable
 
 		$core = new Core(
 			$plugin,
-			$options['activator'] ? $options['activator']($plugin) : null,
-			$options['deactivator'] ? $options['deactivator']($plugin) : null,
-			$options['upgrader'] ? $options['upgrader']($plugin) : null
+			$options['activator'] ? new $options['activator']($plugin) : null,
+			$options['deactivator'] ? new $options['deactivator']($plugin) : null,
+			$options['upgrader'] ? new $options['upgrader']($plugin) : null
 		);
 
 		Connector::setInstance($core);
