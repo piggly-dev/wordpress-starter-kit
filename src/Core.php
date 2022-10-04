@@ -21,7 +21,7 @@ use Piggly\Wordpress\Settings\KeyingBucket;
  * @license MIT
  * @copyright 2021 Piggly Lab <dev@piggly.com.br>
  */
-abstract class Core extends Initiable
+class Core extends Initiable
 {
 	/**
 	 * Startup plugin core with an activator,
