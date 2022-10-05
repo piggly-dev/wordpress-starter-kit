@@ -1,207 +1,330 @@
 <?php
 
-namespace Piggly\Wordpress\Collection;
+namespace Piggly\Wordpress\Tables;
 
-use stdClass;
+use Exception;
+use Piggly\Wordpress\Post\Interfaces\PostTypeInterface;
+use WP_List_Table;
 
 /**
- * Record collection manipulation.
+ * Record table manipulation.
  *
  * @package \Piggly\Wordpress
- * @subpackage \Piggly\Wordpress\Collection
- * @version 1.0.12
- * @since 1.0.12
+ * @subpackage \Piggly\Wordpress\Tables
+ * @version 1.0.7
+ * @since 1.0.7
  * @category Table
  * @author Caique Araujo <caique@piggly.com.br>
  * @author Piggly Lab <dev@piggly.com.br>
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class RecordCollection
+abstract class RecordTable extends WP_List_Table
 {
 	/**
-	 * Mounted query.
+	 * Custom post type.
 	 *
-	 * @var string
-	 * @since 1.0.12
+	 * @since 1.0.7
+	 * @var PostTypeInterface
 	 */
-	protected $_query;
+	protected PostTypeInterface $postType;
 
 	/**
-	 * Where AND clauses.
-	 * It will be joined with
-	 * AND expression.
+	 * Constructor, we override the parent to pass our own arguments
+	 * We usually focus on three parameters: singular and plural labels,
+	 * as well as whether the class supports AJAX.
 	 *
-	 * @var array
-	 * @since 1.0.12
+	 * @since 1.0.7
+	 * @return void
 	 */
-	protected $_where = [];
-
-	/**
-	 * Order by expression.
-	 *
-	 * @var array
-	 * @since 1.0.12
-	 */
-	protected $_order_by = [];
-
-	/**
-	 * Pagination metadata.
-	 *
-	 * @since 1.0.12
-	 * @var array
-	 */
-	protected $_pagination = [];
-
-	/**
-	 * Start with base SQL string with select and join.
-	 *
-	 * @param string $base_query
-	 * @since 1.0.12
-	 */
-	public function __construct(string $base_query)
+	public function __construct(PostTypeInterface $postType)
 	{
-		$this->_query = $base_query;
+		$this->postType = $postType;
+		$prefix = $postType::fieldPrefix();
+
+		parent::__construct([
+			'singular' => $prefix . '_table_link',
+			'plural' => $prefix . 's_table_links',
+			'ajax' => false,
+			'screen' => $postType::getSlug() . '-table',
+		]);
 	}
 
 	/**
-	 * Add a where expression.
+	 * Get a list of columns.
 	 *
-	 * @param string $expression
-	 * @since 1.0.12
-	 * @return self
+	 * @since 1.0.7
+	 * @return array
 	 */
-	public function where(string $expression)
+	public function get_columns()
 	{
-		$this->_where[] = $expression;
-		return $this;
+		throw new Exception('It must be implemented on child class...');
 	}
 
 	/**
-	 * Order by column.
+	 * Prepares the list of items for displaying.
 	 *
-	 * @param string $column
-	 * @param string $order
-	 * @since 1.0.12
-	 * @return self
+	 * @since 1.0.7
+	 * @return void
 	 */
-	public function order_by(string $column, string $order = 'ASC')
+	public function prepare_items()
 	{
-		$this->_order_by[] = "{$column} {$order}";
-		return $this;
+		$this->_column_headers = $this->get_column_info();
+		$this->items = $this->fetch_table_data();
 	}
 
 	/**
-	 * Paginate current query.
+	 * Fetch data table.
 	 *
-	 * @param integer $perpage
-	 * @param integer $page
-	 * @since 1.0.12
-	 * @return self
+	 * @since 1.0.7
+	 * @return void
 	 */
-	public function paginate(int $perpage, int $page = 1)
+	public function fetch_table_data()
 	{
-		$this->_pagination = [];
+		throw new Exception('It must be implemented on child class...');
+	}
 
+	/**
+	 * Return an array with WHERE expressions.
+	 *
+	 * @param array $columns
+	 * @since 1.0.7
+	 * @return array
+	 */
+	protected function _applySearch(array $columns): array
+	{
 		global $wpdb;
+		$search = filter_input(\INPUT_GET, 's', \FILTER_SANITIZE_STRING);
 
-		$page = empty($page) || !\is_numeric($page) || $page <= 0 ? 1 : $page;
-		$totalitems = $wpdb->query($this->mount());
-		$totalpages = \ceil($totalitems / $perpage);
-
-		if (!empty($page) && !empty($perpage)) {
-			$this->_pagination = [
-				'page' => $page,
-				'perpage' => $perpage,
-				'offset' => ($page - 1) * $perpage,
-				'totalpages' => $totalpages,
-				'totalitems' => $totalitems
-			];
+		if (empty($search)) {
+			return [];
 		}
 
-		return $this;
+		$where = [];
+
+		foreach ($columns as $column) {
+			$where[] = $wpdb->prepare("{$column} LIKE '%%%s%%'", $search);
+		}
+
+		return ['(' . \implode(' OR ', $where) . ')'];
 	}
 
 	/**
-	 * Mount current query.
+	 * Apply where clausules.
 	 *
-	 * @since 1.0.12
+	 * @param string $query
+	 * @param array $exp
+	 * @since 1.0.7
 	 * @return string
 	 */
-	public function mount(): string
+	protected function _applyWhere(string $query, array $exp): string
 	{
-		$query = $this->_query;
-
-		if (!empty($this->_where)) {
-			$query .= ' WHERE ('. implode(') AND (', $this->_where). ') ';
-		}
-
-		if (!empty($this->_order_by)) {
-			$query .= ' ORDER BY '. implode(', ', $this->_order_by). ' ';
-		}
-
-		if (!empty($this->_pagination)) {
-			$query .= ' LIMIT ' . (int) $this->_pagination['offset'] . ', ' . (int) $this->_pagination['perpage'];
+		if (!empty($exp)) {
+			$query .= \sprintf(' WHERE %s ', \implode(' AND ', $exp));
 		}
 
 		return $query;
 	}
 
 	/**
-	 * Get all records to current query.
+	 * Apply ordenation to SQL query.
 	 *
-	 * @since 1.0.12
-	 * @return array<stdClass>
+	 * @param string $query
+	 * @param array $columns
+	 * @since 1.0.7
+	 * @return string
 	 */
-	public function get(): array
+	protected function _applyOrdenation(
+		string $query,
+		array $columns
+	): string {
+		if (empty($columns)) {
+			return $query;
+		}
+
+		$columns = \array_map(
+			function ($k, $v) {
+				$v = empty($v) ? 'ASC' : $v;
+				return "$k $v";
+			},
+			\array_keys($columns),
+			\array_values($columns)
+		);
+
+		$query .= ' ORDER BY ' . \implode(', ', $columns);
+		return $query;
+	}
+
+	/**
+	 * Applies pagination to SQL query.
+	 *
+	 * @param string $query
+	 * @since 1.0.7
+	 * @return string
+	 */
+	protected function _applyPagination(string $query): string
 	{
 		global $wpdb;
 
-		$results = $wpdb->get_results($this->mount());
+		//Number of elements in your table?
+		$totalitems = $wpdb->query($query); //return the total number of affected rows
+		//How many to display per page?
+		$perpage = 10;
+		//Which page is this?
+		$paged = !empty($_GET['paged'])
+			? \filter_input(INPUT_GET, 'paged', \FILTER_VALIDATE_INT)
+			: '';
 
-		if (empty($results)) {
-			return [];
+		//Page Number
+		if (empty($paged) || !\is_numeric($paged) || $paged <= 0) {
+			$paged = 1;
 		}
 
-		return $results;
+		$totalpages = \ceil($totalitems / $perpage);
+
+		//adjust the query to take pagination into account
+		if (!empty($paged) && !empty($perpage)) {
+			$offset = ($paged - 1) * $perpage;
+			$query .= ' LIMIT ' . (int) $offset . ',' . (int) $perpage;
+		}
+
+		/* -- Register the pagination -- */
+		$this->set_pagination_args([
+			'total_items' => $totalitems,
+			'total_pages' => $totalpages,
+			'per_page' => $perpage,
+		]);
+
+		return $query;
 	}
 
 	/**
-	 * Get pagination metadata.
+	 * Generates content for a single row of the table.
 	 *
-	 * @since 1.0.12
-	 * @return array
-	 */
-	public function pagination_metadata(): array
-	{
-		return $this->_pagination;
-	}
-
-	/**
-	 * Get pagination html.
-	 *
-	 * @param string $base_url
-	 * @since 1.0.12
+	 * @param object $item The current item.
+	 * @param string $column_name The current column name.
+	 * @since 1.0.7
 	 * @return string
 	 */
-	public function htmlPagination(string $base_url): string
+	protected function column_default($item, $column_name)
 	{
-		if (empty($this->_pagination)) {
-			return '';
+		switch ($column_name) {
+			case 'priority':
+				return \esc_html($item->priority);
+			default:
+				return 'Desconhecida';
 		}
+	}
 
-		$html = '<div class="pgly-wps--navigator pgly-wps-are-small">';
+	/**
+	 * Get sortable columns.
+	 *
+	 * @since 1.0.7
+	 * @return array
+	 */
+	public function get_sortable_columns()
+	{
+		return [];
+	}
 
-		for ($i = 0; $i < $this->_pagination['totalpages']; $i++) {
-			$idx = strval($i+1);
-			$is_current = $this->_pagination['totalpages'] === $i+1 ? 'pgly-wps-is-selected' : '';
-			$html .= "<a href=\"{$base_url}&paged={$idx};?>\" title=\"Ir para a página {$idx}\" class=\"pgly-wps--item {$is_current}\">";
-			$html .= $idx;
-			$html .= '</a>';
+	/**
+	 * Generates custom table navigation to prevent conflicting nonces.
+	 *
+	 * @param string $which The location of the bulk actions: 'top' or 'bottom'.
+	 * @since 1.0.7
+	 * @return void
+	 */
+	protected function display_tablenav($which)
+	{
+		?>
+<div class="tablenav <?php echo \esc_attr($which); ?>">
+
+	<div class="alignleft actions bulkactions">
+		<?php $this->bulk_actions($which); ?>
+	</div>
+	<?php
+	$this->extra_tablenav($which);
+		$this->pagination($which); ?>
+	<br class="clear" />
+</div>
+<?php
+	}
+
+	/**
+	 * Generates content for a single row of the table.
+	 *
+	 * @param object $item The current item.
+	 * @since 1.0.7
+	 * @return void
+	 */
+	public function single_row($item)
+	{
+		echo '<tr>';
+		$this->single_row_columns($item);
+		echo '</tr>';
+	}
+
+	/**
+	 * Add extra markup in the toolbars before or after the list.
+	 *
+	 * @since 1.0.7
+	 * @param string $which, helps you decide if you add the markup after (bottom) or before (top) the list.
+	 * @return void
+	 */
+	public function extra_tablenav($which)
+	{
+		if ($which == 'top') {
+			echo 'Abaixo, todos os ' .
+				$this->postType::pluralName() .
+				' cadastrados.';
 		}
+	}
 
-		$html .= '</div>';
+	/**
+	 * Returns an associative array containing the bulk action.
+	 *
+	 * @since 1.0.7
+	 * @return void
+	 */
+	public function get_bulk_actions()
+	{
+		$actions = [
+			'remover' => 'Remover ' . $this->postType::pluralName(),
+		];
+		return $actions;
+	}
 
-		return $html;
+	/**
+	 * Get links bulk actions.
+	 *
+	 * @param object $item A row's data.
+	 * @since 1.0.7
+	 * @return array [$edit, $remove]
+	 */
+	public function get_links($item)
+	{
+		$url = admin_url('admin.php?page=' . $this->postType::getSlug());
+
+		$edit_link = \esc_url(
+			\add_query_arg(
+				[
+					'id' => $item->id,
+					'action' => 'edit',
+				],
+				$url . '-content'
+			)
+		);
+
+		$remove_link = \esc_url(
+			\add_query_arg(
+				[
+					'id' => $item->id,
+					'action' => 'remove',
+				],
+				$url . '-content'
+			)
+		);
+
+		return [$edit_link, $remove_link];
 	}
 }
