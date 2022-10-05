@@ -195,7 +195,7 @@ class RecordCollection
 		for ($i = 0; $i < $this->_pagination['totalpages']; $i++) {
 			$idx = strval($i+1);
 			$is_current = $this->_pagination['totalpages'] === $i+1 ? 'pgly-wps-is-selected' : '';
-			$html .= "<a href=\"{$base_url}&paged={$idx};?>\" title=\"Ir para a página {$idx}\" class=\"pgly-wps--item {$is_current}\">";
+			$html .= "<a href=\"{$base_url}&paged={$idx}\" title=\"Ir para a página {$idx}\" class=\"pgly-wps--item {$is_current}\">";
 			$html .= $idx;
 			$html .= '</a>';
 		}
