@@ -17,7 +17,7 @@ use DateTimeImmutable;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-class DateTimeInputField extends TextInputField
+class TimeInputField extends TextInputField
 {
 	/**
 	 * Input type.
