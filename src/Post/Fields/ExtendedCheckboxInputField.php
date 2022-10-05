@@ -52,9 +52,11 @@ class ExtendedCheckboxInputField extends InputField
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
+		$pl = $this->placeholder()??'';
+
 		$html .= "<div class=\"pgly-wps--checkbox\" data-value=\"{$vl}\">";
 		$html .= "<div class=\"pgly-wps--icon\"></div>";
-		$html .= "<div class=\"pgly-wps--placeholder\">My checkbox</div>";
+		$html .= "<div class=\"pgly-wps--placeholder\">{$pl}</div>";
 		$html .= "</div>";
 
 		if ($this->isRequired()) {
