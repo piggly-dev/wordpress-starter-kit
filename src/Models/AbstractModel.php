@@ -73,7 +73,7 @@ abstract class AbstractModel
 	}
 
 	/**
-	 * Set a field.
+	 * Has a field. Same as isset().
 	 *
 	 * @param string $field
 	 * @param mixed $value
@@ -83,6 +83,19 @@ abstract class AbstractModel
 	public function has(string $field): bool
 	{
 		return isset($this->_fields[$field]);
+	}
+
+	/**
+	 * Is a field empty? Same as empty()
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @since 1.0.12
+	 * @return bool
+	 */
+	public function empty(string $field): bool
+	{
+		return empty($this->_fields[$field]);
 	}
 
 	/**
