@@ -27,6 +27,9 @@ class ExtendedSingleMediaInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
 			return \intval($value);
 		};
 	}
@@ -36,28 +39,30 @@ class ExtendedSingleMediaInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $src
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', $src = '', array $labels = [])
+	public function render($value = '', $src = '', array $labels = []): string
 	{
 		$this->changeValue($value);
-
-		$vl = $this->value() ? 'true' : 'false';
 		$lbls = \array_merge(['clean' => 'Clean Selection', 'select' => 'Select'], $labels);
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--single-media\" data-name=\"{$this->name()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
+		$html .= "<div class=\"pgly-wps--field pgly-wps--media-wrapper {$this->getCssForm()}--input {$this->getCssForm()}--single-media\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
 		$html .= "<div class=\"container\">
-			<img data-value=\"{$vl}\" data-src=\"{$src}\" />
+			<img data-value=\"{$this->value()}\" data-src=\"{$src}\" />
 			<span class=\"pgly-wps--placeholder\">{$this->placeholder()}</span>
 		</div>";
 
 		$html .= '<span class="pgly-wps--message"></span>';
+
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px;">Obrigatório</span>';
+		}
 
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
@@ -71,6 +76,6 @@ class ExtendedSingleMediaInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

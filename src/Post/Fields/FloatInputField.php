@@ -35,6 +35,9 @@ class FloatInputField extends TextInputField
 		parent::__construct($options);
 
 		$this->_options['transform'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
 			return \floatval($value);
 		};
 	}

@@ -27,6 +27,9 @@ class FinderSelectInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
 			return \esc_attr($value);
 		};
 	}
@@ -36,17 +39,17 @@ class FinderSelectInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $lbl
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', $lbl = '', array $labels = [])
+	public function render($value = '', $lbl = '', array $labels = []): string
 	{
 		$this->changeValue($value);
 
-		$vl = $this->value() ? 'true' : 'false';
+		$vl = $this->value();
 		$lbls = \array_merge(['search' => 'Search', 'unselect' => 'Unselect'], $labels);
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--finder\" data-name=\"{$this->name()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--finder\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
@@ -69,6 +72,10 @@ class FinderSelectInputField extends InputField
 			</div>
 		</div>";
 
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px; margin-right: 6px">Obrigatório</span>';
+		}
+
 		$html .= '<span class="pgly-wps--message"></span>';
 
 		if (!empty($this->description())) {
@@ -79,6 +86,6 @@ class FinderSelectInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

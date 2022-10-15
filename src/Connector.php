@@ -3,6 +3,7 @@
 namespace Piggly\Wordpress;
 
 use Piggly\Wordpress\Core\Debugger;
+use Piggly\Wordpress\Core\Scaffold\Initiable;
 use Piggly\Wordpress\Plugin;
 use Piggly\Wordpress\Settings\KeyingBucket;
 use Piggly\Wordpress\Settings\Manager;
@@ -25,7 +26,7 @@ class Connector
 	/**
 	 * Plugin core instance.
 	 *
-	 * @var Core
+	 * @var Initiable
 	 * @since 1.0.7
 	 */
 	public static $_core;
@@ -33,11 +34,11 @@ class Connector
 	/**
 	 * Set static core instance.
 	 *
-	 * @param Core $core
+	 * @param Initiable $core
 	 * @since 1.0.7
 	 * @return void
 	 */
-	public static function setInstance(Core $core)
+	public static function setInstance(Initiable $core)
 	{
 		static::$_core = $core;
 	}
@@ -46,9 +47,9 @@ class Connector
 	 * Get static core instance.
 	 *
 	 * @since 1.0.7
-	 * @return Core|null
+	 * @return Initiable|null
 	 */
-	public static function getInstance(): ?Core
+	public static function getInstance(): ?Initiable
 	{
 		return static::$_core;
 	}

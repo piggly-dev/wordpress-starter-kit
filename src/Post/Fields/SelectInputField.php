@@ -37,17 +37,17 @@ class SelectInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $default
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', array $options = [])
+	public function render($value = '', array $options = []): string
 	{
 		$this->changeValue($value);
 
 		$id = $this->name(true);
 		$vl = $this->value();
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--select\" data-name=\"{$this->name()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--select\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
@@ -67,6 +67,10 @@ class SelectInputField extends InputField
 		$html .= '</select>';
 		$html .= '<span class="pgly-wps--message"></span>';
 
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px;">Obrigatório</span>';
+		}
+		
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
@@ -74,6 +78,6 @@ class SelectInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

@@ -27,7 +27,7 @@ class ExtendedCheckboxInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
-			return \boolval($value);
+			return \boolval($value ?? false);
 		};
 	}
 	/**
@@ -36,29 +36,34 @@ class ExtendedCheckboxInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $default
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '')
+	public function render($value = ''): string
 	{
 		$this->changeValue($value);
 
 		$id = $this->name(true);
 		$vl = $this->value() ? 'true' : 'false';
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--checkbox\" data-name=\"{$this->name()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
+		$html .= "<div class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--checkbox\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
+		$pl = $this->placeholder()??'';
+
 		$html .= "<div class=\"pgly-wps--checkbox\" data-value=\"{$vl}\">";
 		$html .= "<div class=\"pgly-wps--icon\"></div>";
-		$html .= "<div class=\"pgly-wps--placeholder\">My checkbox</div>";
+		$html .= "<div class=\"pgly-wps--placeholder\">{$pl}</div>";
 		$html .= "</div>";
 
-		$html .= '<span class="pgly-wps--message"></span>';
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px; margin-right: 6px">Obrigatório</span>';
+		}
 
+		$html .= '<span class="pgly-wps--message"></span>';
 		if (!empty($this->description())) {
 			$html .= "<p class=\"pgly-wps--description\">{$this->description()}</p>";
 		}
@@ -67,6 +72,6 @@ class ExtendedCheckboxInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

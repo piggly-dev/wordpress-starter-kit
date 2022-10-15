@@ -37,14 +37,22 @@ class DateTimeInputField extends TextInputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
-			if ($value instanceof DateTimeImmutable) {
-				return \esc_attr($value->format('Y-m-d\TH:i:s'));
+			if (empty($value)) {
+				return null;
 			}
 
-			return \esc_attr((new DateTimeImmutable($value, \wp_timezone()))->format('Y-m-d\TH:i:s'));
+			if ($value instanceof DateTimeImmutable) {
+				return \esc_attr($value->format('Y-m-d\TH:i'));
+			}
+
+			return \esc_attr((new DateTimeImmutable($value, \wp_timezone()))->format('Y-m-d\TH:i'));
 		};
 
 		$this->_options['transform'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
+
 			return new DateTimeImmutable($value, \wp_timezone());
 		};
 	}
