@@ -10,8 +10,10 @@ use Piggly\Wordpress\Core\Scaffold\Initiable;
 use Piggly\Wordpress\Entities\AbstractEntity;
 use Piggly\Wordpress\Helpers\BodyValidator;
 use Piggly\Wordpress\Helpers\RequestBodyParser;
+use Piggly\Wordpress\Notices\NoticeManager;
 use Piggly\Wordpress\Post\Fields\Form;
 use Piggly\Wordpress\Post\Fields\SchemaExtractor;
+use Piggly\Wordpress\Post\Interfaces\PostTypeInterface;
 
 /**
  * Manage the custom post type structure.
@@ -26,7 +28,7 @@ use Piggly\Wordpress\Post\Fields\SchemaExtractor;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-abstract class CustomPostType extends Initiable
+abstract class CustomPostType extends Initiable implements PostTypeInterface
 {
 	/**
 	 * ID from query string variable.
@@ -99,7 +101,7 @@ abstract class CustomPostType extends Initiable
 		$slug = static::getSlug();
 
 		add_menu_page(
-			'Visualizar todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			static::pluralName(),
 			'edit_posts',
 			$slug,
@@ -109,8 +111,8 @@ abstract class CustomPostType extends Initiable
 
 		add_submenu_page(
 			$slug,
-			'Visualizar todos ' . static::pluralName(),
-			'Todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			'edit_posts',
 			$slug,
 			'',
@@ -119,8 +121,8 @@ abstract class CustomPostType extends Initiable
 
 		add_submenu_page(
 			$slug,
-			'Adicionar novo ' . static::singularName(),
-			'Adicionar novo',
+			'Adicionar ' . static::singularName(),
+			'Adicionar ' . static::singularName(),
 			'edit_posts',
 			$slug . '-content',
 			[$this, 'content_page'],
@@ -329,7 +331,7 @@ abstract class CustomPostType extends Initiable
 		$this->get_fields($requestBody);
 		$this->entity->save();
 
-		$this->notification(
+		NoticeManager::echoNotice(
 			\sprintf(
 				'%s salvo com sucesso. Você será redirecionado em instantes.',
 				static::singularName()
@@ -360,7 +362,7 @@ abstract class CustomPostType extends Initiable
 			static::entityModel()::primaryKey() => $this->query_id,
 		]);
 
-		$this->notification(
+		NoticeManager::echoNotice(
 			\sprintf(
 				'%s removido com sucesso. Você será redirecionado em instantes.',
 				static::singularName()
@@ -410,83 +412,4 @@ abstract class CustomPostType extends Initiable
 </script>
 <?php
 	}
-
-	/**
-	 * Echo notification in screen.
-	 *
-	 * @param string $message
-	 * @param string $type
-	 * @since 1.0.7
-	 * @return void
-	 */
-	protected function notification(
-		string $message,
-		string $type = 'success'
-	) {
-		echo "<div class=\"notice notice-{$type}\"><p>{$message}</p></div>";
-	}
-
-	/**
-	 * Get the HTML form.
-	 *
-	 * @since 1.0.10
-	 * @return Form
-	 */
-	abstract public function form(): Form;
-
-	/**
-	 * Get custom post type icon.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	abstract public static function getIcon(): string;
-
-	/**
-	 * Get custom post type slug.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	abstract public static function getSlug(): string;
-
-	/**
-	 * Get custom post type singular name.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	abstract public static function singularName(): string;
-
-	/**
-	 * Get custom post type plural name.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	abstract public static function pluralName(): string;
-
-	/**
-	 * Get custom post type field prefix.
-	 *
-	 * @since 1.0.7
-	 * @return string
-	 */
-	abstract public static function fieldPrefix(): string;
-
-	/**
-	 * Get the current repository.
-	 *
-	 * @since 1.0.10
-	 * @return AbstractEntity
-	 */
-	abstract public static function entityModel(): AbstractEntity;
-
-	/**
-	 * Get the current table.
-	 *
-	 * @since 1.0.7
-	 * @return RecordTable
-	 */
-	abstract public static function getTable();
 }

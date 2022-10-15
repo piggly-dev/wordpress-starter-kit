@@ -2,8 +2,6 @@
 
 namespace Piggly\Wordpress\Post;
 
-use DateTime;
-use Piggly\Wordpress\Post\Fields\InputField;
 use Piggly\Wordpress\Repository\WPRepository;
 use Piggly\Wordpress\Tables\RecordTable;
 use Piggly\Wordpress\Core\WP;
@@ -11,10 +9,10 @@ use Exception;
 use Piggly\Wordpress\Connector;
 use Piggly\Wordpress\Core\Scaffold\JSONable;
 use Piggly\Wordpress\Entities\AbstractEntity;
-use Piggly\Wordpress\Helpers\BodyValidator;
 use Piggly\Wordpress\Helpers\RequestBodyParser;
 use Piggly\Wordpress\Post\Fields\Form;
 use Piggly\Wordpress\Post\Fields\SchemaExtractor;
+use Piggly\Wordpress\Post\Interfaces\PostTypeInterface;
 
 /**
  * Manage the custom post type structure.
@@ -29,7 +27,7 @@ use Piggly\Wordpress\Post\Fields\SchemaExtractor;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-abstract class AsyncCustomPostType extends JSONable
+abstract class AsyncCustomPostType extends JSONable implements PostTypeInterface
 {
 	/**
 	 * ID from query string variable.
@@ -89,6 +87,17 @@ abstract class AsyncCustomPostType extends JSONable
 	public function startup()
 	{
 		WP::add_action('admin_menu', $this, 'add_menu', 99);
+		$this->handlers();
+	}
+
+	/**
+	 * Handle all endpoints.
+	 *
+	 * @since 1.0.12
+	 * @return void
+	 */
+	public function handlers()
+	{
 	}
 
 	/**
@@ -102,7 +111,7 @@ abstract class AsyncCustomPostType extends JSONable
 		$slug = static::getSlug();
 
 		add_menu_page(
-			'Visualizar todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			static::pluralName(),
 			'edit_posts',
 			$slug,
@@ -112,8 +121,8 @@ abstract class AsyncCustomPostType extends JSONable
 
 		add_submenu_page(
 			$slug,
-			'Visualizar todos ' . static::pluralName(),
-			'Todos ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
+			'Visualizar ' . static::pluralName(),
 			'edit_posts',
 			$slug,
 			'',
@@ -122,8 +131,8 @@ abstract class AsyncCustomPostType extends JSONable
 
 		add_submenu_page(
 			$slug,
-			'Adicionar novo ' . static::singularName(),
-			'Adicionar novo',
+			'Adicionar ' . static::singularName(),
+			'Adicionar ' . static::singularName(),
 			'edit_posts',
 			$slug . '-content',
 			[$this, 'content_page'],
@@ -141,24 +150,35 @@ abstract class AsyncCustomPostType extends JSONable
 	{
 		\wp_enqueue_media();
 
+		$name = \sprintf('pgly-wps-settings-%s', $this->js_version);
+
 		\wp_enqueue_script(
-			\sprintf('pgly-wps-settings-%s-js', $this->js_version),
-			Connector::plugin()->getUrl() . '/assets/vendor/js/pgly-wps-settings.js',
+			'axios',
+			'https://unpkg.com/axios/dist/axios.min.js',
 			null,
-			Connector::plugin()->getVersion(),
+			'0.27.2',
+			true
+		);
+
+
+		\wp_enqueue_script(
+			$name,
+			Connector::plugin()->getUrl() . 'assets/vendor/js/pgly-wps-settings.js',
+			['axios'],
+			$this->js_version,
 			true
 		);
 
 		\wp_enqueue_style(
-			\sprintf('pgly-wps-settings-%s-css', $this->js_version),
-			Connector::plugin()->getUrl() . '/assets/vendor/css/pgly-wps-settings.css',
+			$name,
+			Connector::plugin()->getUrl() . 'assets/vendor/css/pgly-wps-settings.min.css',
 			null,
-			Connector::plugin()->getVersion(),
+			$this->js_version,
 			'all'
 		);
 
 		\wp_localize_script(
-			\sprintf('pgly-wps-settings-%s-js', $this->js_version),
+			$name,
 			Connector::plugin()->getName(),
 			[
 				'ajax_url' => admin_url('admin-ajax.php'),
@@ -203,7 +223,7 @@ abstract class AsyncCustomPostType extends JSONable
 				$e->getMessage() .
 				'</p></div>';
 
-			if ($e->getCode(404)) {
+			if ($e->getCode() === 404) {
 				exit;
 			}
 		}
@@ -247,12 +267,13 @@ abstract class AsyncCustomPostType extends JSONable
 	/**
 	 * Prepare fields to editing.
 	 *
+	 * @param array $options
 	 * @since 1.0.9
 	 * @return void
 	 */
-	protected function prepare_fields()
+	protected function prepare_fields(array $options = [])
 	{
-		$this->entity = static::entityModel()::create();
+		$this->entity = static::entityModel($options);
 
 		// Try to load fields
 		if (!empty($this->query_id)) {
@@ -260,11 +281,7 @@ abstract class AsyncCustomPostType extends JSONable
 
 			if (empty($fields)) {
 				throw new Exception(
-					\sprintf(
-						'O %s não foi localizado, tente novamente mais tarde ou selecione outro %s.',
-						static::singularName(),
-						static::singularName()
-					),
+					'O registro não foi localizado, tente novamente mais tarde ou selecione outro registro.',
 					404
 				);
 			}
@@ -301,7 +318,8 @@ abstract class AsyncCustomPostType extends JSONable
 				$requestBody,
 				SchemaExtractor::extract($this->form()->fields()),
 				['nonce_name' => 'x_security', 'nonce_action' => static::nonceAction()]
-			)
+			),
+			$requestBody->body()
 		);
 	}
 
@@ -316,7 +334,7 @@ abstract class AsyncCustomPostType extends JSONable
 		$requestBody = new RequestBodyParser();
 
 		if (!$requestBody->isPOST()) {
-			return;
+			throw new Exception('Método HTTP não disponível.', 405);
 		}
 
 		$this->get_fields($requestBody);
@@ -330,97 +348,25 @@ abstract class AsyncCustomPostType extends JSONable
 	 * @return bool
 	 * @throws Exception
 	 */
-	protected function remove(string $id): bool
+	protected function remove(): bool
 	{
+		$requestBody = new RequestBodyParser();
+
+		if (!$requestBody->isPOST()) {
+			throw new Exception('Método HTTP não disponível.', 405);
+		}
+
+		$body = $requestBody->body();
+		$this->authorizationCheck($body);
+
+		$id = $body['id'] ?? null;
+
+		if (empty($id)) {
+			throw new Exception('O ID é requerido.', 422);
+		}
+
 		return static::entityModel()::getRepo()::delete([
 			static::entityModel()::primaryKey() => $id,
 		]);
 	}
-
-	/**
-	 * Echo notification in screen.
-	 *
-	 * @param string $message
-	 * @param string $type
-	 * @since 1.0.9
-	 * @return void
-	 */
-	protected function notification(
-		string $message,
-		string $type = 'success'
-	) {
-		echo "<div class=\"notice notice-{$type}\"><p>{$message}</p></div>";
-	}
-
-	/**
-	 * Get the HTML form.
-	 *
-	 * @since 1.0.10
-	 * @return Form
-	 */
-	abstract public function form(): Form;
-
-	/**
-	 * Get custom post type icon.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function getIcon(): string;
-
-	/**
-	 * Get custom post type slug.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function getSlug(): string;
-
-	/**
-	 * Get custom post type singular name.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function singularName(): string;
-
-	/**
-	 * Get custom post type plural name.
-	 *
-	 * @since 1.0.9
-	 * @return string
-	 */
-	abstract public static function pluralName(): string;
-
-	/**
-	 * Get nonce action name.
-	 *
-	 * @since 1.0.10
-	 * @return string
-	 */
-	abstract public static function nonceAction(): string;
-
-	/**
-	 * Get the current repository.
-	 *
-	 * @since 1.0.10
-	 * @return AbstractEntity
-	 */
-	abstract public static function entityModel(): AbstractEntity;
-
-	/**
-	 * Get the current repository.
-	 *
-	 * @since 1.0.9
-	 * @return WPRepository
-	 */
-	abstract public static function getRepository(): WPRepository;
-
-	/**
-	 * Get the current table.
-	 *
-	 * @since 1.0.9
-	 * @return RecordTable
-	 */
-	abstract public static function getTable();
 }

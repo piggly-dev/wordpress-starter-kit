@@ -27,6 +27,10 @@ class UrlInputField extends TextInputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
+
 			return \esc_url($value);
 		};
 	}

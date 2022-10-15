@@ -51,6 +51,10 @@
 
 * [ADD] Entity object and its behaviors.
 
-## `1.0.10` at `2022-09-14`
+## `1.0.11` at `2022-09-14`
 
 * [FIX] Add submit button to form.
+
+## `1.1.0` at `2022-10-15`
+
+* Fixes and new features.

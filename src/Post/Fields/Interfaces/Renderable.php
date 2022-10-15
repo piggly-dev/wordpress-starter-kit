@@ -23,7 +23,7 @@ interface Renderable
 	 *
 	 * @param mixed $value
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value);
+	public function render($value): string;
 }

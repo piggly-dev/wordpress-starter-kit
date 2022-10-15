@@ -27,6 +27,9 @@ class ExtendedSelectInputField extends InputField
 		parent::__construct($options);
 
 		$this->_options['parse'] = function ($value) {
+			if (empty($value)) {
+				return null;
+			}
 			return \esc_attr($value);
 		};
 	}
@@ -36,24 +39,23 @@ class ExtendedSelectInputField extends InputField
 	 * @param mixed $value
 	 * @param mixed $lbl
 	 * @since 1.0.9
-	 * @return void
+	 * @return string
 	 */
-	public function render($value = '', $lbl = '')
+	public function render($value = '', $lbl = ''): string
 	{
 		$this->changeValue($value);
 
 		$id = $this->name(true);
-		$vl = $this->value() ? 'true' : 'false';
 
-		$html  = "<div class=\"pgly-wps--column pgly-col-is-{$this->columnSize()}\">";
-		$html .= "<div class=\"pgly-wps--field pgly-form--input pgly-form--eselect\" data-name=\"{$this->name()}\">";
+		$html  = "<div class=\"pgly-wps--column pgly-wps-col--{$this->columnSize()}\">";
+		$html .= "<div id=\"{$id}\" class=\"pgly-wps--field {$this->getCssForm()}--input {$this->getCssForm()}--eselect\" data-name=\"{$this->name()}\">";
 
 		if (!empty($this->label())) {
 			$html .= "<label class=\"pgly-wps--label\">{$this->label()}</label>";
 		}
 
-		$html .= "<div class=\"pgly-wps--select\" data-value=\"{$vl}\" data-label=\"{$lbl}\">
-			<div class=\"selected empty\">
+		$html .= "<div class=\"pgly-wps--select\">
+			<div class=\"selected empty\" data-value=\"{$this->value()}\" data-label=\"{$lbl}\">
 				<span>{$this->placeholder()}</span>
 				<svg class=\"pgly-wps--arrow\" height=\"48\" viewBox=\"0 0 48 48\" width=\"48\"
 					xmlns=\"http://www.w3.org/2000/svg\">
@@ -70,6 +72,10 @@ class ExtendedSelectInputField extends InputField
 			</div>
 		</div>";
 
+		if ($this->isRequired()) {
+			$html .= '<span class="pgly-wps--badge pgly-wps-is-danger" style="margin-top: 6px; margin-right: 6px">Obrigatório</span>';
+		}
+
 		$html .= '<span class="pgly-wps--message"></span>';
 
 		if (!empty($this->description())) {
@@ -79,6 +85,6 @@ class ExtendedSelectInputField extends InputField
 		$html .= '</div>';
 		$html .= '</div>';
 
-		echo $html;
+		return $html;
 	}
 }

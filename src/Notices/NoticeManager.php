@@ -1,7 +1,8 @@
 <?php
+
 namespace Piggly\Wordpress\Notices;
 
-use Piggly\Wordpress\Core;
+use Piggly\Wordpress\Connector;
 use Piggly\Wordpress\Notices\Entities\Notice;
 
 /**
@@ -17,8 +18,23 @@ use Piggly\Wordpress\Notices\Entities\Notice;
  * @license MIT
  * @copyright 2021 Piggly Lab <dev@piggly.com.br>
  */
-class Manager
+class NoticeManager
 {
+	/**
+	 * Echo notification in screen.
+	 *
+	 * @param string $message
+	 * @param string $type
+	 * @since 1.0.7
+	 * @return void
+	 */
+	public static function echoNotice(
+		string $message,
+		string $type = 'success'
+	) {
+		echo "<div class=\"notice notice-{$type}\"><p>{$message}</p></div>";
+	}
+
 	/**
 	 * Add a notice to admin.
 	 *
@@ -26,10 +42,11 @@ class Manager
 	 * @since 1.0.0
 	 * @return void
 	 */
-	public function addNotice ( Notice $notice )
+	public function addNotice(Notice $notice)
 	{
-		if ( $notice->isTransient() )
-		{ $this->_transient($notice); }
+		if ($notice->isTransient()) {
+			$this->_transient($notice);
+		}
 
 		$this->_immediate($notice);
 	}
@@ -40,17 +57,16 @@ class Manager
 	 * @since 1.0.0
 	 * @return void
 	 */
-	protected function displayTransient ()
+	protected function displayTransient()
 	{
-		$notices = get_transient(Core::getPlugin()->getNotices()) ?? [];
-		
-		foreach ( $notices as $notice )
-		{
+		$notices = get_transient(Connector::plugin()->getNotices()) ?? [];
+
+		foreach ($notices as $notice) {
 			$notice = \unserialize($notice);
 			echo $notice->export();
 		}
 
-		delete_transient(Core::getPlugin()->getNotices());
+		delete_transient(Connector::plugin()->getNotices());
 	}
 
 	/**
@@ -60,12 +76,12 @@ class Manager
 	 * @since 1.0.0
 	 * @return void
 	 */
-	protected function _transient ( Notice $notice )
+	protected function _transient(Notice $notice)
 	{
-		$notices   = get_transient(Core::getPlugin()->getNotices()) ?? [];
+		$notices   = get_transient(Connector::plugin()->getNotices()) ?? [];
 		$notices[] = \serialize($notice);
 
-		set_transient(Core::getPlugin()->getNotices(), $notice, 45);
+		set_transient(Connector::plugin()->getNotices(), $notice, 45);
 	}
 
 	/**
@@ -75,6 +91,8 @@ class Manager
 	 * @since 1.0.0
 	 * @return void
 	 */
-	protected function _immediate ( Notice $notice )
-	{ add_action( 'admin_notices', [$notice, 'export']); }
+	protected function _immediate(Notice $notice)
+	{
+		add_action('admin_notices', [$notice, 'export']);
+	}
 }

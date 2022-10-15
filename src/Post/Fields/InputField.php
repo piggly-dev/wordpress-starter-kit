@@ -46,7 +46,8 @@ abstract class InputField extends HTMLField
 			'parse' => null, // parse function fn ($v) => $v
 			'transform' => null, // transformer function fn ($v) => $v
 			'validation' => null, // array of functions fn ($v) => throw Exception
-			'column_size' => 12
+			'column_size' => 12,
+			'on_group' => false,
 		], $options);
 
 		$this->_value = null;
@@ -204,5 +205,16 @@ abstract class InputField extends HTMLField
 	{
 		$this->_value = $this->parse($value);
 		return $this;
+	}
+
+	/**
+	 * Get css form class.
+	 *
+	 * @since 1.0.12
+	 * @return self
+	 */
+	protected function getCssForm()
+	{
+		return $this->_options['on_group'] ? 'pgly-gform' : 'pgly-form';
 	}
 }
