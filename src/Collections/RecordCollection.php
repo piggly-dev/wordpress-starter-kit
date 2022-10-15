@@ -108,6 +108,7 @@ class RecordCollection
 		$page = empty($page) || !\is_numeric($page) || $page <= 0 ? 1 : $page;
 		$totalitems = $wpdb->query($this->mount());
 		$totalpages = \ceil($totalitems / $perpage);
+		$page = $page > $totalpages ? $totalpages : $page;
 
 		if (!empty($page) && !empty($perpage)) {
 			$this->_pagination = [
@@ -181,22 +182,51 @@ class RecordCollection
 	 * Get pagination html.
 	 *
 	 * @param string $base_url
+	 * @param int $maxpages Max pages to show
 	 * @since 1.0.12
 	 * @return string
 	 */
-	public function htmlPagination(string $base_url): string
+	public function htmlPagination(string $base_url, int $maxpages = 5): string
 	{
 		if (empty($this->_pagination)) {
 			return '';
 		}
 
+		$totalpages = $this->_pagination['totalpages'];
+		$page = $this->_pagination['page'];
+		$pages = [];
+
+		if ($totalpages <= $maxpages) {
+			$pages = range(1, $totalpages);
+		} else {
+			if ($page < $maxpages) {
+				$pages = range(1, $maxpages);
+
+				$pages[] = '...';
+				$pages[] = $totalpages-1;
+				$pages[] = $totalpages;
+			} elseif ($page+$maxpages > $totalpages) {
+				$pages = [1, '...'];
+
+				for ($i = 5; $i >= 0; $i--) {
+					$pages[] = $totalpages-$i;
+				}
+			} else {
+				$pages = [1, '...', $page-2, $page-1, $page, $page+1, $page+2, '...', $totalpages];
+			}
+		}
+
 		$html = '<div class="pgly-wps--navigator pgly-wps-are-small">';
 
-		for ($i = 0; $i < $this->_pagination['totalpages']; $i++) {
-			$idx = strval($i+1);
-			$is_current = $this->_pagination['page'] === $i+1 ? 'pgly-wps-is-selected' : '';
-			$html .= "<a href=\"{$base_url}&paged={$idx}\" title=\"Ir para a página {$idx}\" class=\"pgly-wps--item {$is_current}\">";
-			$html .= $idx;
+		foreach ($pages as $_page) {
+			if ($_page === '...') {
+				$html .= '<span class="pgly-wps--item">...</span>';
+				continue;
+			}
+
+			$is_current = $_page == $page ? 'pgly-wps-is-selected' : '';
+			$html .= "<a href=\"{$base_url}&paged={$_page}\" title=\"Ir para a página {$_page}\" class=\"pgly-wps--item {$is_current}\">";
+			$html .= $_page;
 			$html .= '</a>';
 		}
 
