@@ -1,6 +1,6 @@
 <?php
 
-namespace Piggly\Wordpress;
+namespace Piggly\Wordpress\Requirements;
 
 use Exception;
 use Piggly\Wordpress\Requirements\Interfaces\RequirementInterface;
