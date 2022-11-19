@@ -58,3 +58,7 @@
 ## `1.1.0` at `2022-10-15`
 
 * Fixes and new features.
+
+## `1.1.2` at `2022-11-12`
+
+* Fix last page in record collection.
