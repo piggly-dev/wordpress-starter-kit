@@ -108,7 +108,6 @@ class RecordCollection
 		$page = empty($page) || !\is_numeric($page) || $page <= 0 ? 1 : $page;
 		$totalitems = $wpdb->query($this->mount());
 		$totalpages = \ceil($totalitems / $perpage);
-		$page = $page > $totalpages ? $totalpages : $page;
 
 		if (!empty($page) && !empty($perpage)) {
 			$this->_pagination = [
