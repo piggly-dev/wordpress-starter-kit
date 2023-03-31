@@ -2,11 +2,11 @@
 
 namespace Piggly\Wordpress;
 
-use Piggly\Wordpress\Core\Debugger;
-use Piggly\Wordpress\Core\Scaffold\Initiable;
+use Piggly\Wordpress\Helpers\Debugger;
 use Piggly\Wordpress\Plugin;
-use Piggly\Wordpress\Settings\KeyingBucket;
+use Piggly\Wordpress\Buckets\KeyingBucket;
 use Piggly\Wordpress\Settings\Manager;
+use RuntimeException;
 
 /**
  * Plugin main core helper.
@@ -26,7 +26,7 @@ class Connector
 	/**
 	 * Plugin core instance.
 	 *
-	 * @var Initiable
+	 * @var Core
 	 * @since 1.0.7
 	 */
 	public static $_core;
@@ -34,11 +34,11 @@ class Connector
 	/**
 	 * Set static core instance.
 	 *
-	 * @param Initiable $core
+	 * @param Core $core Plugin core instance.
 	 * @since 1.0.7
 	 * @return void
 	 */
-	public static function setInstance(Initiable $core)
+	public static function setInstance(Core $core)
 	{
 		static::$_core = $core;
 	}
@@ -47,10 +47,15 @@ class Connector
 	 * Get static core instance.
 	 *
 	 * @since 1.0.7
-	 * @return Initiable|null
+	 * @throws RuntimeException If core is not set.
+	 * @return Core
 	 */
-	public static function getInstance(): ?Initiable
+	public static function getInstance(): Core
 	{
+		if (!static::$_core) {
+			throw new RuntimeException('Plugin core is not set.');
+		}
+
 		return static::$_core;
 	}
 
@@ -62,7 +67,7 @@ class Connector
 	 */
 	public static function plugin(): Plugin
 	{
-		return static::$_core->getPlugin();
+		return static::$_core->plugin();
 	}
 
 	/**
@@ -73,7 +78,7 @@ class Connector
 	 */
 	public static function domain(): string
 	{
-		return static::$_core->getPlugin()->getDomain();
+		return static::$_core->plugin()->domain();
 	}
 
 	/**
@@ -84,7 +89,7 @@ class Connector
 	 */
 	public static function runtimeSettings(): KeyingBucket
 	{
-		return static::$_core->getPlugin()->bucket();
+		return static::$_core->plugin()->bucket();
 	}
 
 	/**
@@ -95,7 +100,7 @@ class Connector
 	 */
 	public static function debugger(): Debugger
 	{
-		return static::$_core->getPlugin()->debugger();
+		return static::$_core->plugin()->debugger();
 	}
 
 	/**
@@ -106,7 +111,7 @@ class Connector
 	 */
 	public static function settingsManager(): Manager
 	{
-		return static::$_core->getPlugin()->settings();
+		return static::$_core->plugin()->settings();
 	}
 
 	/**
@@ -118,7 +123,7 @@ class Connector
 	public static function settings(): KeyingBucket
 	{
 		return static::$_core
-			->getPlugin()
+			->plugin()
 			->settings()
 			->bucket();
 	}
@@ -126,61 +131,18 @@ class Connector
 	/**
 	 * Customize a string from settings.
 	 *
-	 * @param string $key
-	 * @param string $default
+	 * @param string $key Key to get.
+	 * @param string $default Default value.
 	 * @since 1.0.7
 	 * @return string
 	 */
-	public static function __customize(
-		string $key,
-		string $default = null
-	): string {
+	public static function __customize(string $key, string $default = null): string
+	{
 		return static::$_core
+			->plugin()
 			->settings()
 			->bucket()
 			->get('customizations', new KeyingBucket())
 			->get($key, $default);
-	}
-
-	/**
-	 * Translates $text and retrieves the singular or plural
-	 * form based on the supplied number.
-	 *
-	 * @param string $single
-	 * @param string $plural
-	 * @param integer $number
-	 * @since 1.0.7
-	 * @return string
-	 */
-	public static function _ntranslate(
-		string $single,
-		string $plural,
-		int $number
-	): string {
-		return static::$_core->_ntranslate($single, $plural, $number);
-	}
-
-	/**
-	 * Display the translation of $text.
-	 *
-	 * @param string $text
-	 * @since 1.0.7
-	 * @return void
-	 */
-	public static function _etranslate(string $text)
-	{
-		static::$_core->_etranslate($text);
-	}
-
-	/**
-	 * Retrieve the translation of $text.
-	 *
-	 * @param string $text
-	 * @since 1.0.7
-	 * @return string
-	 */
-	public static function __translate(string $text): string
-	{
-		return static::$_core->__translate($text);
 	}
 }

@@ -1,6 +1,6 @@
 # Wordpress Starter Kit
 
-![Current Branch](https://img.shields.io/badge/version-1.x.x-green?style=flat-square) [![Latest Version on Packagist](https://img.shields.io/packagist/v/piggly/wordpress-starter-kit.svg?style=flat-square)](https://packagist.org/packages/piggly/wordpress-starter-kit) [![Packagist Downloads](https://img.shields.io/packagist/dt/piggly/wordpress-starter-kit?style=flat-square)](https://packagist.org/packages/piggly/wordpress-starter-kit) [![Packagist Stars](https://img.shields.io/packagist/stars/piggly/wordpress-starter-kit?style=flat-square)](https://packagist.org/packages/piggly/wordpress-starter-kit) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE) ![PHP](https://img.shields.io/packagist/php-v/piggly/wordpress-starter-kit?style=flat-square)
+![Current Branch](https://img.shields.io/badge/version-2.x.x-green?style=flat-square) [![Latest Version on Packagist](https://img.shields.io/packagist/v/piggly/wordpress-starter-kit.svg?style=flat-square)](https://packagist.org/packages/piggly/wordpress-starter-kit) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE) ![PHP](https://img.shields.io/packagist/php-v/piggly/wordpress-starter-kit?style=flat-square)
 
 The Wordpress Starter Kit was developed to be used at wordpress plugins development. It contains all basic classes to better organize code and aggregate all common operations.
 
@@ -20,7 +20,7 @@ The main goal is develop a boilerplate to **Piggly Lab**. But, it can be used to
 3. Install all Composer's dependencies with `composer install`;
 4. Add project's autoload file at your code base `require_once('/path/to/piggly/wordpress-starter-kit/vendor/autoload.php);`.
 
-## Dependencies 
+## Dependencies
 
 The library has the following external dependencies:
 

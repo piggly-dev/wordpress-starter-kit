@@ -62,3 +62,11 @@
 ## `1.1.2` at `2022-11-12`
 
 * Fix last page in record collection.
+
+## `2.0.0` at `2023-03-29`
+
+* Many break changes for apply WordPress standards;
+* Addition of PHPCS;
+* Form fields moved to an external library (`piggly/php-form-fields`);
+* Custom posts and table removed, may be an external library soon;
+* Functions, methods and classes not applyable to general basic plugins were removed.
