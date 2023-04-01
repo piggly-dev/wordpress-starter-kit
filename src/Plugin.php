@@ -136,7 +136,7 @@ class Plugin
 
 	/**
 	 * Set basename to plugin. It applies plugin_basename()
-	 * function to $basename string.
+	 * function to $basename string. And solve dirname.
 	 *
 	 * @param string $basename Plugin basename.
 	 * @since 2.0.0
@@ -151,6 +151,7 @@ class Plugin
 
 	/**
 	 * Get plugin basename.
+	 * Eg.: my-plugin/my-plugin.php
 	 *
 	 * @since 2.0.0
 	 * @return string
@@ -158,6 +159,18 @@ class Plugin
 	public function basename(): string
 	{
 		return $this->_bucket->get('basename', '');
+	}
+
+	/**
+	 * Get plugin dirname.
+	 * Eg.: my-plugin
+	 *
+	 * @since 2.0.0
+	 * @return string
+	 */
+	public function dirname(): string
+	{
+		return $this->_bucket->get('dirname', '');
 	}
 
 	/**

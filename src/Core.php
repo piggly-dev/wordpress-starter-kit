@@ -114,32 +114,6 @@ class Core extends AbstractInitiable
 	}
 
 	/**
-	 * Init a initiable class.
-	 *
-	 * @param string $initiable AbstractInitiable class name.
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public function initiable(string $initiable)
-	{
-		$initiable::init($this->_plugin);
-	}
-
-	/**
-	 * Init a bunch of initiable classes.
-	 *
-	 * @param array<string> $initiables AbstractInitiable class names.
-	 * @since 1.0.12
-	 * @return void
-	 */
-	public function initiables(array $initiables)
-	{
-		foreach ($initiables as $initiable) {
-			$initiable::init($this->_plugin);
-		}
-	}
-
-	/**
 	 * Apply requirements and if all meet return true.
 	 *
 	 * @param string $response Message to show if requirements not meet.

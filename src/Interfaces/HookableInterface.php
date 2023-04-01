@@ -3,7 +3,7 @@
 namespace Piggly\Wordpress\Interfaces;
 
 /**
- * The runnable interface implements the run()
+ * The hookable interface implements the hooks()
  * method to run all business logic applied to a
  * class.
  *
@@ -17,13 +17,13 @@ namespace Piggly\Wordpress\Interfaces;
  * @license MIT
  * @copyright 2022 Piggly Lab <dev@piggly.com.br>
  */
-interface RunnableInterface
+interface HookableInterface
 {
 	/**
-	 * Method to run all business logic.
+	 * Run all actions and filters.
 	 *
 	 * @since 2.0.0
 	 * @return void
 	 */
-	public function run();
+	public function hooks();
 }
